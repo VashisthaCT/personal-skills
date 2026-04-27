@@ -3,7 +3,7 @@
   "cycle": "FY27-H1",
   "cycle_start": "2026-04-01",
   "cycle_end": "2026-09-30",
-  "last_evaluated": null,
+  "last_evaluated": "2026-04-28T01:37:47+05:30",
   "user_grade_current": "SE-I / IC2 / L4",
   "user_grade_target": "SE-II / IC2-3 / L5",
   "rubric_lines": [
@@ -16,18 +16,36 @@
       "se2_bar": "Reviews PRs from peers; substantive (not rubber-stamp)",
       "threshold": "≥10 substantive 3rd-party reviews per half across ≥3 distinct authors and ≥2 repos",
       "current": {
-        "substantive_reviews": 0,
-        "distinct_authors": [],
-        "repos": [],
-        "evidence": []
+        "substantive_reviews": 1,
+        "distinct_authors": [
+          "VashisthaCT"
+        ],
+        "repos": [
+          "ClearTax/einvoicing-core"
+        ],
+        "evidence": [
+          {
+            "url": "https://github.com/ClearTax/einvoicing-core/pull/1282",
+            "author": "VashisthaCT",
+            "repo": "ClearTax/einvoicing-core",
+            "user_comment_count": 7
+          }
+        ]
       },
       "data_source": {
         "type": "github",
         "query": "reviewed-by:VashisthaCT is:pr -author:VashisthaCT created:>=2026-04-01",
         "filter": "comments_count >= 5"
       },
-      "status": "🟡 below threshold",
-      "history": []
+      "status": "🔴 not started (1/10)",
+      "history": [
+        {
+          "evaluated_at": "2026-04-28T01:37:47+05:30",
+          "from_status": "🟡 below threshold",
+          "to_status": "🔴 not started (1/10)"
+        }
+      ],
+      "last_evaluated": "2026-04-28T01:37:47+05:30"
     },
     {
       "id": "engineering.lld",
@@ -38,7 +56,8 @@
       "current": {
         "user_owned_llds": 0,
         "with_shipped_pr": 0,
-        "evidence": []
+        "evidence": [],
+        "note": "requires Claude session — run /v-promo-tracker (delegates to promo-evidence-scorer subagent for Drive/Slack searches)"
       },
       "data_source": {
         "type": "drive",
@@ -52,8 +71,14 @@
       "dimension": "Engineering",
       "name": "Testing (drives coverage)",
       "threshold": "≥3 user-driven coverage initiatives per half with measurable delta",
-      "current": { "coverage_initiatives": 0, "evidence": [] },
-      "data_source": { "type": "github", "query": "author:VashisthaCT is:pr body-contains:coverage" },
+      "current": {
+        "coverage_initiatives": 0,
+        "evidence": []
+      },
+      "data_source": {
+        "type": "github",
+        "query": "author:VashisthaCT is:pr body-contains:coverage"
+      },
       "status": "🟡 below threshold",
       "history": []
     },
@@ -62,8 +87,18 @@
       "dimension": "Engineering",
       "name": "Debugging team's code (not just own)",
       "threshold": "≥6 substantive cross-author debugs per half (Slack first-replies in #einvoice-l3-support, #einv-devs)",
-      "current": { "cross_author_debugs": 0, "evidence": [] },
-      "data_source": { "type": "slack", "channels": ["C055ABMAVCL", "C04U10T2DAN"], "filter": "user:U087T0SHNCC first_reply pr-link" },
+      "current": {
+        "cross_author_debugs": 0,
+        "evidence": []
+      },
+      "data_source": {
+        "type": "slack",
+        "channels": [
+          "C055ABMAVCL",
+          "C04U10T2DAN"
+        ],
+        "filter": "user:U087T0SHNCC first_reply pr-link"
+      },
       "status": "🟡 below threshold",
       "history": []
     },
@@ -72,18 +107,42 @@
       "dimension": "Org Building",
       "name": "Mentoring SE-Is (NEW at SE-II)",
       "threshold": "≥2 named mentees per half with ≥10 documented touchpoints each",
-      "current": { "mentees": 0, "touchpoints_per_mentee": [], "evidence": [] },
-      "data_source": { "type": "yaml", "path": "data/mentees.yaml" },
-      "status": "🔴 not started",
-      "history": []
+      "current": {
+        "mentees": 0,
+        "touchpoints_per_mentee": [],
+        "evidence": []
+      },
+      "data_source": {
+        "type": "yaml",
+        "path": "data/mentees.yaml"
+      },
+      "status": "🔴 not started (0 mentees logged)",
+      "history": [
+        {
+          "evaluated_at": "2026-04-28T01:37:47+05:30",
+          "from_status": "🔴 not started",
+          "to_status": "🔴 not started (0 mentees logged)"
+        }
+      ],
+      "last_evaluated": "2026-04-28T01:37:47+05:30"
     },
     {
       "id": "org.influence",
       "dimension": "Org Building",
       "name": "Influence engineers on LLD (NEW at SE-II)",
       "threshold": "≥4 Slack threads per half pushing back on a design where the design changes in a follow-up PR",
-      "current": { "influence_threads": 0, "evidence": [] },
-      "data_source": { "type": "slack", "channels": ["C09AC9XKTC5", "C04U10T2DAN", "C09TU9UMJJ2"] },
+      "current": {
+        "influence_threads": 0,
+        "evidence": []
+      },
+      "data_source": {
+        "type": "slack",
+        "channels": [
+          "C09AC9XKTC5",
+          "C04U10T2DAN",
+          "C09TU9UMJJ2"
+        ]
+      },
       "status": "🟡 below threshold",
       "history": []
     },
@@ -92,8 +151,19 @@
       "dimension": "Org Building",
       "name": "Communication clarity (broadcast + RCAs)",
       "threshold": "≥3 RCAs per half + ≥1 broadcast post per quarter in #einv-devs or wider",
-      "current": { "rcas": 0, "broadcast_posts": 0, "evidence": [] },
-      "data_source": { "type": "drive+slack", "drive_filter": "owner=user, title contains 'RCA' or 'RCF'", "slack_channels": ["C04U10T2DAN"] },
+      "current": {
+        "rcas": 0,
+        "broadcast_posts": 0,
+        "evidence": [],
+        "note": "requires Claude session — run /v-promo-tracker (delegates to promo-evidence-scorer subagent for Drive/Slack searches)"
+      },
+      "data_source": {
+        "type": "drive+slack",
+        "drive_filter": "owner=user, title contains 'RCA' or 'RCF'",
+        "slack_channels": [
+          "C04U10T2DAN"
+        ]
+      },
       "status": "🟡 below threshold",
       "history": []
     },
@@ -102,7 +172,10 @@
       "dimension": "Org Building",
       "name": "Hiring panels (NEW at SE-II)",
       "threshold": "≥4 hiring panels per half + ≥4 written feedback notes",
-      "current": { "panels": 0, "feedback_notes": 0 },
+      "current": {
+        "panels": 0,
+        "feedback_notes": 0
+      },
       "blocker": "Manager confirmation needed (Q1 in §7 of plan) — eligibility may be gated to SE-II-confirmed engineers only",
       "status": "🔴 not started, possibly N/A",
       "history": []
@@ -112,8 +185,14 @@
       "dimension": "Product & Business",
       "name": "Customer Understanding (NEW at SE-II)",
       "threshold": "≥4 customer-named investigations per half (JIRA + Slack referencing specific customer workflows)",
-      "current": { "customer_investigations": 0, "evidence": [] },
-      "data_source": { "type": "jira+slack", "filter": "text contains any of: MAF, Tabby, Mitsuba, Swiggy, Eicher" },
+      "current": {
+        "customer_investigations": 0,
+        "evidence": []
+      },
+      "data_source": {
+        "type": "jira+slack",
+        "filter": "text contains any of: MAF, Tabby, Mitsuba, Swiggy, Eicher"
+      },
       "status": "🟡 below threshold",
       "history": []
     },
@@ -122,8 +201,14 @@
       "dimension": "Product & Business",
       "name": "Product Metrics (NEW at SE-II)",
       "threshold": "≥3 evidence-points per half citing concrete numbers (failure %, p99, GMV, IRN/EWB volume)",
-      "current": { "metric_citations": 0, "evidence": [] },
-      "data_source": { "type": "slack+drive", "filter": "user-authored, contains numerical metric" },
+      "current": {
+        "metric_citations": 0,
+        "evidence": []
+      },
+      "data_source": {
+        "type": "slack+drive",
+        "filter": "user-authored, contains numerical metric"
+      },
       "status": "🟡 below threshold",
       "history": []
     },
@@ -134,18 +219,37 @@
       "current_level": "L3",
       "next_target": "L4 Mastering",
       "threshold_l4": "≥3 features with quantified before/after time + ≥1 published workflow doc + ≥1 multi-step agent workflow live",
-      "current": { "timed_features_logged": 0, "workflow_docs": 0, "agent_workflows_live": 1, "evidence": ["personal-skills repo itself"] },
-      "data_source": { "type": "yaml", "path": "data/ai_tooling.yaml" },
+      "current": {
+        "timed_features_logged": 0,
+        "workflow_docs": 0,
+        "agent_workflows_live": 1,
+        "evidence": [
+          "personal-skills repo itself"
+        ],
+        "note": "timed_features_logged + workflow_docs require /v-timed-feature (Phase 6). Manual override: edit promotion_state.json directly."
+      },
+      "data_source": {
+        "type": "yaml",
+        "path": "data/ai_tooling.yaml"
+      },
       "status": "🟡 L3 trending L4",
-      "history": []
+      "history": [],
+      "last_evaluated": "2026-04-28T01:37:47+05:30"
     },
     {
       "id": "execution.delivery_timeliness",
       "dimension": "Execution",
       "name": "Delivery Timeliness",
       "threshold": "≥85% on-time delivery at SE-II expanded scope (resolved <= duedate)",
-      "current": { "on_time_ratio": null, "tickets_evaluated": 0, "evidence": [] },
-      "data_source": { "type": "jira", "jql": "assignee = currentUser() AND resolved >= -90d AND duedate is not EMPTY" },
+      "current": {
+        "on_time_ratio": null,
+        "tickets_evaluated": 0,
+        "evidence": []
+      },
+      "data_source": {
+        "type": "jira",
+        "jql": "assignee = currentUser() AND resolved >= -90d AND duedate is not EMPTY"
+      },
       "status": "🟡 not yet measured",
       "history": []
     }
