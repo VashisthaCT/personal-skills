@@ -1,0 +1,105 @@
+# Per-country invoicing context. Stub status: rich = full runbook seeded; stub = 1-page placeholder.
+
+countries:
+  jordan:
+    code: JO
+    region: MEA
+    status: dev-complete
+    regulator: ISTD (Jordan)
+    portal: https://portal.jofotara.gov.jo/en
+    api: https://backend.jofotara.gov.jo/core/invoices/
+    repos: [einvoicing-core/einvoice-jo, clear-routing/clear-jofotara, clear-sales/einvoice-global]
+    runbook: runbooks/countries/jordan/
+    seed: rich
+    consultant: Avtax
+    go_live_target: 2026-05-15
+    client: MAF (Majid Al Futtaim)
+    epic: NV-263
+
+  india:
+    code: IN
+    region: SEA-IND
+    status: live
+    regulator: GSTN/NIC/CBIC
+    repos: [e-invoicing-be, clr-irp-be, ingestion-overlord]
+    runbook: runbooks/countries/india/
+    seed: rich
+    notes: "IRN + EWB; NIC1/NIC2 switcher reverted post-Nov 2025 outage; on-call heavy; FTP migration in progress"
+
+  uae:
+    code: AE
+    region: MEA
+    status: live
+    regulator: FTA UAE
+    repos: [einvoicing-core/einvoice-ae, clear-routing/clear-ae-fta]
+    runbook: runbooks/countries/uae/
+    seed: rich
+    notes: "Tabby B2B/B2C live Dec 16 2025; MEA re-routing live Mar 26 2026"
+
+  ksa:
+    code: SA
+    region: MEA
+    status: live
+    regulator: ZATCA (Saudi Arabia)
+    repos: [einvoicing-core, ingestion-overlord]
+    runbook: runbooks/countries/ksa/
+    seed: stub
+    notes: "ZATCA SDK 3.4.2/3.4.3 live H1 2025; Sev1 Apr 27 2026 (Redis/licensing)"
+
+  malaysia:
+    code: MY
+    region: SEA
+    status: live
+    regulator: LHDN (Malaysia)
+    repos: [einvoicing-core/einvoice-my, clear-routing/clear-my-lhdn]
+    runbook: runbooks/countries/malaysia/
+    seed: stub
+
+  belgium:
+    code: BE
+    region: EU
+    status: live
+    regulator: FOD Financiën (Belgium)
+    repos: [einvoicing-core/einvoice-be, clear-peppol-ap]
+    runbook: runbooks/countries/belgium/
+    seed: stub
+
+  france:
+    code: FR
+    region: EU
+    status: accreditation-track
+    regulator: PPF (Plateforme Publique de Facturation, France)
+    repos: [clear-peppol-ap]
+    runbook: runbooks/countries/france/
+    seed: stub
+    notes: "CEO all-hands milestone Apr 24 2026; user tracking, not coding actively"
+
+  poland:
+    code: PL
+    region: EU
+    status: live
+    regulator: KSeF (Poland)
+    repos: [einvoicing-core/einvoice-pl]
+    runbook: runbooks/countries/poland/
+    seed: stub
+
+regions:
+  peppol:
+    name: Peppol Network
+    status: live (with EUSR/TSR reporting active)
+    governing_body: OpenPeppol
+    docs: https://docs.peppol.eu/edelivery/
+    repos: [clear-peppol-ap]
+    runbook: runbooks/regions/peppol/
+    seed: rich
+    cleartax_id: POP000602
+    notes: "EUSR/TSR monthly reports due 15th of each month"
+
+  gcc:
+    name: GCC (Gulf Cooperation Council)
+    countries: [SA, AE, BH, OM, QA, KW]
+    status: oncall-driven
+    repos: [einvoicing-core, e-invoicing-be]
+    runbook: runbooks/regions/gcc/
+    seed: rich
+    notes: "Active code is mostly UAE+KSA but on-call comes for any GCC country"

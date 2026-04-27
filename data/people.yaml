@@ -1,0 +1,136 @@
+# Top collaborators. Slack IDs verified from project_perf_review_fy26 + project_personal_skills memories.
+
+people:
+  manager:
+    - id: ayush-jain
+      name: Ayush Jain
+      role: Engineering Manager (manager)
+      slack: U0ABBKV5QDU
+      relationship: manager
+      dm: D0AC1AKDJKT
+
+  pm:
+    - id: rahul-meena
+      name: Rahul Meena
+      role: Product Manager (KSA, GCC)
+      slack: U08R0HS205A
+      relationship: pm
+    - id: prachi-bajaj
+      name: Prachi Bajaj
+      role: Product Manager (Tobacco RSP, IND, custom-fields)
+      slack: U08QV1Y655K
+      relationship: pm
+    - id: vinay-hegde
+      name: Vinay Hegde
+      role: Product Manager
+      slack: UTUA6G9R6
+      relationship: pm
+    - id: prachi-singhal
+      name: Prachi Singhal
+      role: Product Manager (Peppol)
+      relationship: pm
+    - id: manish-tripathi
+      name: Manish Tripathi
+      role: Product Manager (FTP einvoice)
+      slack: U0889KF29LP
+      relationship: pm
+
+  em-tl-architect:
+    - id: abhilash-pareek
+      name: Abhilash Pareek
+      role: Engineering Manager (India einvoicing)
+      slack: U01C78HQ8Q4
+      relationship: em
+    - id: anand-mohan
+      name: Anand Mohan
+      role: Tech Lead (Peppol)
+      relationship: tech-lead
+    - id: febin-sathar
+      name: Febin Sathar
+      role: Architect
+      slack: U020XCP3DEW
+      relationship: architect
+    - id: vikas-jethnani
+      name: Vikas Jethnani
+      role: Engineering Director
+      slack: U08U2MAV068
+      relationship: director
+
+  peer:
+    - id: aquib-jawed
+      name: Aquib Jawed (jawedaquib)
+      role: Engineer (Jordan, FTP)
+      slack: U01FSG6S057
+      dm: D097RE9HL5Q
+      relationship: peer
+    - id: kushagra-bhardwaj
+      name: Kushagra Bhardwaj
+      role: Engineer (Jordan)
+      dm: D0A8G1XJPMJ
+      relationship: peer
+    - id: yash-doshi
+      name: Yash Doshi
+      role: Engineer
+      slack: U08C0D2ULSD
+      relationship: peer
+    - id: roshan-abhishek
+      name: Roshan Abhishek
+      role: Engineer
+      slack: U08QV1TT1D3
+      relationship: peer
+    - id: sushant-gupta
+      name: Sushant Gupta (clearsushant)
+      role: Engineer
+      dm: D0ADPLA2R8D
+      relationship: peer
+    - id: utsav-pandey
+      name: Utsav Pandey (UtsavClear)
+      role: Engineer
+      dm: D0AKJ1KBQ1E
+      relationship: peer
+    - id: shreyash-rai
+      name: Shreyash Rai
+      role: Engineer
+      relationship: peer
+    - id: deepak-verma
+      name: Deepak Verma
+      role: Engineer
+      dm: D088R6MEQTB
+      relationship: peer-non-work
+    - id: ritik-raj
+      name: Ritik Raj
+      role: Engineer (Tabby UAE)
+      relationship: peer
+    - id: ishaan-bhatnagar
+      name: Ishaan Bhatnagar
+      role: Engineer (Peppol L3, FTP)
+      relationship: peer
+    - id: kunal-arora
+      name: Kunal Arora
+      role: Engineer (Peppol)
+      relationship: peer
+    - id: mayank-nagpal
+      name: Mayank Nagpal
+      role: Engineer (Peppol self-billing PR #105)
+      relationship: peer
+
+# Self-DM (drop zone for skill outputs)
+self_dm: D088362AS65
+
+# Active group DMs / project channels
+group_dms:
+  peppol_team: C0AD7VBDX3M  # Anand, Prachi-S, Vashistha, Ayush, Vinay, Ishaan, Kunal
+  ksa_deploy: C0ANDUZ5893
+  jordan_team: C0ASEKS03K8
+
+key_channels:
+  einv_devs: C04U10T2DAN
+  einvoice_l3_support: C055ABMAVCL          # IND L3
+  einvoice_mea_l3_support: C0AB8EAH9A6      # MEA L3
+  einvoicing_global_platform: C08MX0F3F17
+  einvoicing_global_pr: C09TU9UMJJ2
+  e_invoice_tech_internal: C09AC9XKTC5
+  einvoice_india_mea: C0ADWHJ2V9S
+  ftp_einvoice_india: C0APQH50274
+  mea_jordan_egypt_oman_discovery: C0ABA7RC1QD
+  einv_qa: C04AKPP1RL4

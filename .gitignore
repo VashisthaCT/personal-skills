@@ -1,0 +1,14 @@
+.DS_Store
+*.log
+*.tmp
+.venv/
+__pycache__/
+*.pyc
+node_modules/
+.env
+.env.local
+data/snapshots/*.json
+!data/snapshots/.gitkeep
+
+# work-journal is its own git repo (VashisthaCT/work-journal), maintained separately by daily-documentation cron
+data/work-journal/

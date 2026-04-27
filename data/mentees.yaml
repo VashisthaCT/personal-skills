@@ -1,0 +1,19 @@
+# SE-I mentees. User-populated.
+# /v-mentee log <id> <touchpoint> records interactions.
+# /v-promo-tracker counts touchpoints per mentee against the SE-II "≥2 named mentees with ≥10 touchpoints/half" threshold.
+
+mentees: []
+
+# Example (uncomment + fill):
+# mentees:
+#   - id: jane-doe
+#     name: Jane Doe
+#     role: SE-I
+#     slack: UXXXXXXXX
+#     started: 2026-04-28
+#     touchpoints: []
+#     # touchpoints schema:
+#     #   - date: 2026-04-28
+#     #     type: 1:1 | slack-thread | dm | pr-review | doc-review
+#     #     link: <slack-permalink-or-pr-url>
+#     #     summary: <one-liner>

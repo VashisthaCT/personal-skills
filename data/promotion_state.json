@@ -1,0 +1,166 @@
+{
+  "schema_version": "0.1.0",
+  "cycle": "FY27-H1",
+  "cycle_start": "2026-04-01",
+  "cycle_end": "2026-09-30",
+  "last_evaluated": null,
+  "user_grade_current": "SE-I / IC2 / L4",
+  "user_grade_target": "SE-II / IC2-3 / L5",
+  "rubric_lines": [
+    {
+      "id": "engineering.code_review",
+      "dimension": "Engineering",
+      "name": "Code Review (NEW at SE-II)",
+      "description": "Reviews code of other SE-Is and SE-IIs",
+      "se1_bar": "(not graded)",
+      "se2_bar": "Reviews PRs from peers; substantive (not rubber-stamp)",
+      "threshold": "≥10 substantive 3rd-party reviews per half across ≥3 distinct authors and ≥2 repos",
+      "current": {
+        "substantive_reviews": 0,
+        "distinct_authors": [],
+        "repos": [],
+        "evidence": []
+      },
+      "data_source": {
+        "type": "github",
+        "query": "reviewed-by:VashisthaCT is:pr -author:VashisthaCT created:>=2026-04-01",
+        "filter": "comments_count >= 5"
+      },
+      "status": "🟡 below threshold",
+      "history": []
+    },
+    {
+      "id": "engineering.lld",
+      "dimension": "Engineering",
+      "name": "LLD ownership (NEW at SE-II)",
+      "description": "Designs code abstractions, DB schemas, includes analytics",
+      "threshold": "≥3 user-owned LLDs per half, each wired to ≥1 merged PR",
+      "current": {
+        "user_owned_llds": 0,
+        "with_shipped_pr": 0,
+        "evidence": []
+      },
+      "data_source": {
+        "type": "drive",
+        "query": "owner = 'vashistha.garg@clear.in' AND (title contains 'LLD' OR title contains 'design') AND modifiedTime >= '2026-04-01T00:00:00Z'"
+      },
+      "status": "🟡 below threshold",
+      "history": []
+    },
+    {
+      "id": "engineering.testing",
+      "dimension": "Engineering",
+      "name": "Testing (drives coverage)",
+      "threshold": "≥3 user-driven coverage initiatives per half with measurable delta",
+      "current": { "coverage_initiatives": 0, "evidence": [] },
+      "data_source": { "type": "github", "query": "author:VashisthaCT is:pr body-contains:coverage" },
+      "status": "🟡 below threshold",
+      "history": []
+    },
+    {
+      "id": "engineering.debugging",
+      "dimension": "Engineering",
+      "name": "Debugging team's code (not just own)",
+      "threshold": "≥6 substantive cross-author debugs per half (Slack first-replies in #einvoice-l3-support, #einv-devs)",
+      "current": { "cross_author_debugs": 0, "evidence": [] },
+      "data_source": { "type": "slack", "channels": ["C055ABMAVCL", "C04U10T2DAN"], "filter": "user:U087T0SHNCC first_reply pr-link" },
+      "status": "🟡 below threshold",
+      "history": []
+    },
+    {
+      "id": "org.mentoring",
+      "dimension": "Org Building",
+      "name": "Mentoring SE-Is (NEW at SE-II)",
+      "threshold": "≥2 named mentees per half with ≥10 documented touchpoints each",
+      "current": { "mentees": 0, "touchpoints_per_mentee": [], "evidence": [] },
+      "data_source": { "type": "yaml", "path": "data/mentees.yaml" },
+      "status": "🔴 not started",
+      "history": []
+    },
+    {
+      "id": "org.influence",
+      "dimension": "Org Building",
+      "name": "Influence engineers on LLD (NEW at SE-II)",
+      "threshold": "≥4 Slack threads per half pushing back on a design where the design changes in a follow-up PR",
+      "current": { "influence_threads": 0, "evidence": [] },
+      "data_source": { "type": "slack", "channels": ["C09AC9XKTC5", "C04U10T2DAN", "C09TU9UMJJ2"] },
+      "status": "🟡 below threshold",
+      "history": []
+    },
+    {
+      "id": "org.communication",
+      "dimension": "Org Building",
+      "name": "Communication clarity (broadcast + RCAs)",
+      "threshold": "≥3 RCAs per half + ≥1 broadcast post per quarter in #einv-devs or wider",
+      "current": { "rcas": 0, "broadcast_posts": 0, "evidence": [] },
+      "data_source": { "type": "drive+slack", "drive_filter": "owner=user, title contains 'RCA' or 'RCF'", "slack_channels": ["C04U10T2DAN"] },
+      "status": "🟡 below threshold",
+      "history": []
+    },
+    {
+      "id": "org.hiring",
+      "dimension": "Org Building",
+      "name": "Hiring panels (NEW at SE-II)",
+      "threshold": "≥4 hiring panels per half + ≥4 written feedback notes",
+      "current": { "panels": 0, "feedback_notes": 0 },
+      "blocker": "Manager confirmation needed (Q1 in §7 of plan) — eligibility may be gated to SE-II-confirmed engineers only",
+      "status": "🔴 not started, possibly N/A",
+      "history": []
+    },
+    {
+      "id": "product.customer_understanding",
+      "dimension": "Product & Business",
+      "name": "Customer Understanding (NEW at SE-II)",
+      "threshold": "≥4 customer-named investigations per half (JIRA + Slack referencing specific customer workflows)",
+      "current": { "customer_investigations": 0, "evidence": [] },
+      "data_source": { "type": "jira+slack", "filter": "text contains any of: MAF, Tabby, Mitsuba, Swiggy, Eicher" },
+      "status": "🟡 below threshold",
+      "history": []
+    },
+    {
+      "id": "product.metrics",
+      "dimension": "Product & Business",
+      "name": "Product Metrics (NEW at SE-II)",
+      "threshold": "≥3 evidence-points per half citing concrete numbers (failure %, p99, GMV, IRN/EWB volume)",
+      "current": { "metric_citations": 0, "evidence": [] },
+      "data_source": { "type": "slack+drive", "filter": "user-authored, contains numerical metric" },
+      "status": "🟡 below threshold",
+      "history": []
+    },
+    {
+      "id": "ai.competency",
+      "dimension": "AI Competency",
+      "name": "AI Competency Level (target L4)",
+      "current_level": "L3",
+      "next_target": "L4 Mastering",
+      "threshold_l4": "≥3 features with quantified before/after time + ≥1 published workflow doc + ≥1 multi-step agent workflow live",
+      "current": { "timed_features_logged": 0, "workflow_docs": 0, "agent_workflows_live": 1, "evidence": ["personal-skills repo itself"] },
+      "data_source": { "type": "yaml", "path": "data/ai_tooling.yaml" },
+      "status": "🟡 L3 trending L4",
+      "history": []
+    },
+    {
+      "id": "execution.delivery_timeliness",
+      "dimension": "Execution",
+      "name": "Delivery Timeliness",
+      "threshold": "≥85% on-time delivery at SE-II expanded scope (resolved <= duedate)",
+      "current": { "on_time_ratio": null, "tickets_evaluated": 0, "evidence": [] },
+      "data_source": { "type": "jira", "jql": "assignee = currentUser() AND resolved >= -90d AND duedate is not EMPTY" },
+      "status": "🟡 not yet measured",
+      "history": []
+    }
+  ],
+  "deferred_ayush_questions": [
+    "Hiring eligibility — am I being put on hiring panels at SE-II level, or gated to SE-II-confirmed engineers only?",
+    "Mentoring definition — does PM mentoring count, or strictly SE-I engineer mentoring?",
+    "AI competency target — L4 or sustained L3?",
+    "Test coverage SLO — what % is the team SLO?",
+    "LLD format — Confluence template, Drive template, or PR-embedded?",
+    "Code review volume — is ≥10 substantive 3rd-party per half right? Or % of own PR volume?",
+    "Influence measurement — sufficient to show design changed, or need explicit acknowledgment?",
+    "Production Deployment SE-II shift — real expectation to manage own deploys?",
+    "Cross-team scope — weigh cross-country specifically?",
+    "Framework 'live' definition — first onboard, first go-live, or sustained 30 days?"
+  ],
+  "notes": "Initialized 2026-04-28. Thresholds are best-guess defaults from criteria-extraction agent's Section D. Refine when Ayush answers the deferred questions."
+}

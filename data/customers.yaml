@@ -1,0 +1,58 @@
+# Top 10 named customers. /v-customer aggregates JIRA/Slack/PR/RCA per customer.
+# 5 named + 5 placeholders. Edit placeholders as more customers come in scope.
+
+customers:
+  - id: maf
+    name: MAF (Majid Al Futtaim)
+    country: JO
+    status: onboarding
+    notes: "Jordan JoFotara go-live target May 15 2026"
+
+  - id: tabby
+    name: Tabby
+    country: AE
+    status: live
+    notes: "B2B/B2C UAE; live Dec 16 2025; ongoing email/PDF/registration-name issues"
+
+  - id: mitsuba
+    name: Mitsuba
+    country: IN
+    status: live
+    notes: "Auto-GST rule template (EINVI-1231); H1 P0 deliverable"
+
+  - id: swiggy
+    name: Swiggy
+    country: IN
+    status: live
+    notes: "Tobacco RSP cutover Feb 1 2026 with 3-hour pivot"
+
+  - id: eicher
+    name: Eicher
+    country: IN
+    status: live
+    notes: "RCA in H1; reference customer for IND complex flows"
+
+  - id: customer-6
+    name: TBD
+    country: TBD
+    status: placeholder
+
+  - id: customer-7
+    name: TBD
+    country: TBD
+    status: placeholder
+
+  - id: customer-8
+    name: TBD
+    country: TBD
+    status: placeholder
+
+  - id: customer-9
+    name: TBD
+    country: TBD
+    status: placeholder
+
+  - id: customer-10
+    name: TBD
+    country: TBD
+    status: placeholder

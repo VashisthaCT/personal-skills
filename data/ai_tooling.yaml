@@ -1,0 +1,14 @@
+# AI tools used. Drives /v-timed-feature evidence collection for AI L4 rubric line.
+
+primary_tool: claude-code
+
+tools:
+  - id: claude-code
+    name: Claude Code (CLI / IDE)
+    daily_use: true
+    evidence_signals:
+      - PR descriptions tagged with AI assistance
+      - commit messages with Co-Authored-By Claude
+      - claude-code session transcripts at ~/.claude/projects/-Users-vashistha-garg/
+
+# /v-timed-feature retro template at prompts/timed_feature_retro.md (Phase 6)

@@ -1,0 +1,92 @@
+# Top workstreams. Updated weekly by /v-sync-context or hand-edited.
+# Pruned to top 10. Stale entries (no activity 30d) get archived.
+
+projects:
+  - id: jordan-jofotara
+    name: Jordan E-Invoicing (JoFotara) onboarding
+    state: active
+    priority: P0
+    next_milestone: "May 15, 2026 go-live (MAF client)"
+    key_repos: [einvoicing-core, clear-routing, clear-sales]
+    key_people: [aquib-jawed, kushagra-bhardwaj, prachi-bajaj, ayush-jain]
+    runbook: runbooks/countries/jordan/
+    epic: NV-263
+    last_activity_at: 2026-04-27
+
+  - id: peppol-eusr-tsr
+    name: Peppol EUSR/TSR Reporting Automation
+    state: active
+    priority: P1
+    next_milestone: "May 15, 2026 monthly report (April 2026 cycle)"
+    key_repos: [clear-peppol-ap]
+    key_people: [anand-mohan, prachi-singhal, ayush-jain]
+    runbook: runbooks/regions/peppol/
+    epic: GEINV-959
+    last_activity_at: 2026-04-23
+
+  - id: ftp-einvoice-migration
+    name: FTP einvoice migration (IND+KSA → global Temporal)
+    state: solutioning
+    priority: P1
+    next_milestone: "Solutioning walkthrough Apr 28; ETA to Manish ~Apr 29"
+    key_repos: [einvoicing-integrations, e-invoicing-be, ftp-magnet-3, einvoicing-core]
+    key_people: [ayush-jain, manish-tripathi, abhilash-pareek, febin-sathar]
+    slack_channel: C0APQH50274
+    last_activity_at: 2026-04-27
+
+  - id: mea-routing
+    name: MEA-via-EU routing fixes
+    state: active
+    priority: P1
+    next_milestone: "ongoing prod stabilization"
+    key_repos: [ingestion-overlord, einvoicing-core]
+    last_activity_at: 2026-04-27
+
+  - id: ind-irp-nic
+    name: India IRP / NIC reliability
+    state: active
+    priority: P0
+    next_milestone: "NV-341 Oncall Runbook v1, Sev1bugs-121 Redis NIC-down logic"
+    key_repos: [clr-irp-be, e-invoicing-be]
+    last_activity_at: 2026-04-27
+
+  - id: ksa-uae-prod-support
+    name: KSA / UAE production support
+    state: oncall-driven
+    priority: P0
+    next_milestone: "Sev1 from Apr 27 (Redis/licensing) — RCA in flight"
+    key_repos: [einvoicing-core, e-invoicing-be]
+    last_activity_at: 2026-04-27
+
+  - id: tabby-uae
+    name: Tabby (UAE customer) integration support
+    state: active
+    priority: P1
+    next_milestone: "registrationName mapping + retool template + B2B email/PDF flow"
+    key_repos: [einvoicing-core]
+    key_people: [ritik-raj]
+    last_activity_at: 2026-04-27
+
+  - id: bifrost-persistent-storage
+    name: Bifrost persistent token storage LLD
+    state: solutioning
+    priority: P2
+    next_milestone: "LLD authored Apr 5-6; PR #143 paused"
+    key_repos: [bifrost]
+    last_activity_at: 2026-04-06
+
+  - id: ind-reconciliation
+    name: IND reconciliation from main (e-invoicing-be)
+    state: paused
+    priority: P2
+    next_milestone: "next batch on reconcile/ind-from-main branch"
+    key_repos: [e-invoicing-be]
+    last_activity_at: 2026-03-20
+
+  - id: france-accreditation
+    name: France PEPPOL accreditation (org-wide milestone)
+    state: tracking
+    priority: low
+    next_milestone: "CEO all-hands milestone Apr 24; user not actively coding"
+    key_repos: [clear-peppol-ap]
+    last_activity_at: 2026-04-24
