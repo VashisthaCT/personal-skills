@@ -1,0 +1,39 @@
+# Law-watch feed URL map for /v-law-watch.
+# Each country has 1-3 feeds. Add/update as you discover new sources.
+# URLs are seed values — user verifies + corrects on first /v-law-watch run.
+# Format: <region>: <name>: <URL>
+
+feeds:
+  jordan:
+    portal: https://portal.jofotara.gov.jo/en
+    news_url: https://portal.jofotara.gov.jo/en/news  # placeholder; user verifies
+
+  india:
+    nic_portal: https://docs.ewaybillgst.gov.in/
+    cbic_circulars: https://taxinformation.cbic.gov.in/
+    gstn_portal: https://www.gst.gov.in/
+
+  ksa:
+    zatca_news: https://zatca.gov.sa/en/MediaCenter/News/Pages/default.aspx
+
+  uae:
+    fta_news: https://tax.gov.ae/en/media/news.aspx
+
+  malaysia:
+    lhdn: https://www.hasil.gov.my/en/myinvois
+
+  belgium:
+    finbel: https://finance.belgium.be/en
+
+  france:
+    ppf: https://www.economie.gouv.fr/cedef/dematerialisation-factures-electroniques
+
+  poland:
+    ksef: https://www.podatki.gov.pl/ksef/
+
+peppol:
+  bis_specs: https://docs.peppol.eu/edelivery/specs/reporting/
+  openpeppol_news: https://peppol.org/news/
+
+global:
+  invoicenavigator: https://www.invoicenavigator.eu/
