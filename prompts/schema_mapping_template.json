@@ -1,0 +1,407 @@
+{
+  "_template_header": [
+    "TEMPLATE — Schema mapping skeleton for a new e-invoicing country.",
+    "Substitute placeholders: {{COUNTRY_CODE_2}} (e.g. JO), {{COUNTRY_CODE_3}} (e.g. JOR),",
+    "{{COUNTRY_NAME}} (PascalCase, e.g. Jordan), {{PROVIDER_NAME}} (e.g. JoFotara),",
+    "{{CUSTOMIZATION_ID}} (e.g. urn:peppol:pint:billing-1@jo-1),",
+    "{{CURRENCY_3LETTER}} (e.g. JOD), {{CURRENCY_2LETTER}} (e.g. JO).",
+    "STRIP every _comment / _template_header field before copying to einvoicing-core",
+    "(schema-registry's old Jackson can't deserialize unknown fields). See Jordan log Session 3 line 420.",
+    "Reference: ~/dev/personal-skills/prompts/country_onboarding_playbook.md Section B."
+  ],
+  "schemaName": "{{COUNTRY_CODE_2}}_EINVOICE_SALES_GOVT_SCHEMA_EINVOICE_DB_TEMPLATE_SCHEMA_MY",
+  "_comment_schemaName": "B12: sourceSchemaName=_MY pattern. Many countries reuse the legacy MY name to match schema-registry-config.generate.sales.source default. Don't use _{{COUNTRY_CODE_2}} unless you've also overridden the yaml.",
+  "sourceSchemaName": "EINVOICE_DB_TEMPLATE_SCHEMA_MY",
+  "destinationSchemaName": "EINVOICE_SALES_GOVT_SCHEMA",
+  "fieldMappings": [
+    {
+      "_comment_section": "DOCUMENT HEADER — mandatory for all document types.",
+      "destinationPath": "Invoice.ProfileID",
+      "sourceMappingExpression": "reporting:1.0"
+    },
+    {
+      "destinationPath": "Invoice.ID",
+      "sourcePath": "id.en"
+    },
+    {
+      "destinationPath": "Invoice.UUID",
+      "sourcePath": "uuid"
+    },
+    {
+      "destinationPath": "Invoice.IssueDate",
+      "sourcePath": "issueDate.localDate"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceTypeCode.text",
+      "sourcePath": "invoiceTypeCode.value"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceTypeCode._name",
+      "sourcePath": "invoiceSubTypeCode.value",
+      "_comment": "Sub-type code matrix lives in context.yaml. Jordan example: 011/021/012/022/013/023/111/121."
+    },
+    {
+      "destinationPath": "Invoice.DocumentCurrencyCode",
+      "sourcePath": "documentCurrencyCode",
+      "_comment_currency": "3-letter at header level (e.g. {{CURRENCY_3LETTER}}). Distinct from amount-element currencyID which is 2-letter ({{CURRENCY_2LETTER}}) per PHP SDK + Odoo conventions."
+    },
+    {
+      "destinationPath": "Invoice.TaxCurrencyCode",
+      "sourcePath": "taxCurrencyCode"
+    },
+
+    {
+      "_comment_section": "ADDITIONAL DOCUMENT REFERENCE — ICV mandatory (B14). UUID workaround (B5).",
+      "destinationPath": "Invoice.AdditionalDocumentReference.ID",
+      "sourcePath": "additionalDocumentReference[0].id.value"
+    },
+    {
+      "destinationPath": "Invoice.AdditionalDocumentReference.UUID",
+      "sourcePath": "id.en",
+      "_comment": "B5 workaround — Pint→DB drops uuid field on AdditionalDocumentReference. Falls back via id.en to invoice document number. Works because regulator convention is ICV counter = document number."
+    },
+
+    {
+      "_comment_section": "SIGNATURE STUB (B7) — regulator signs server-side. Client ships unsigned envelope.",
+      "destinationPath": "Invoice.Signature.ID",
+      "sourceMappingExpression": "urn:oasis:names:specification:ubl:signature:Invoice"
+    },
+    {
+      "destinationPath": "Invoice.Signature.SignatureMethod",
+      "sourceMappingExpression": "urn:oasis:names:specification:ubl:dsig:enveloped:xades"
+    },
+
+    {
+      "_comment_section": "BILLING REFERENCE (CREDIT NOTES ONLY, type=381) — 3-flag pattern (B10).",
+      "destinationPath": "Invoice.BillingReference.InvoiceDocumentReference.ID",
+      "sourcePath": "billingReference[0].invoiceDocumentReference.id.value",
+      "skipIfEmpty": "true",
+      "skipIfSourceEmpty": "true",
+      "pathResolutionMode": "RELATIVE"
+    },
+    {
+      "destinationPath": "Invoice.BillingReference.InvoiceDocumentReference.UUID",
+      "sourcePath": "billingReference[0].invoiceDocumentReference.uuid",
+      "skipIfEmpty": "true",
+      "skipIfSourceEmpty": "true",
+      "pathResolutionMode": "RELATIVE"
+    },
+    {
+      "destinationPath": "Invoice.BillingReference.InvoiceDocumentReference.DocumentDescription",
+      "sourcePath": "billingReference[0].invoiceDocumentReference.documentDescription",
+      "skipIfEmpty": "true",
+      "skipIfSourceEmpty": "true",
+      "pathResolutionMode": "RELATIVE"
+    },
+
+    {
+      "_comment_section": "PAYMENT MEANS (CREDIT NOTES + cash invoices) — 3-flag pattern (B10).",
+      "destinationPath": "Invoice.PaymentMeans.PaymentMeansCode.text",
+      "sourcePath": "paymentMeans[0].paymentMeansCode.value",
+      "skipIfEmpty": "true",
+      "skipIfSourceEmpty": "true",
+      "pathResolutionMode": "RELATIVE"
+    },
+    {
+      "destinationPath": "Invoice.PaymentMeans.PaymentMeansCode._listID",
+      "sourceMappingExpression": "UN/ECE 4461",
+      "skipIfEmpty": "true"
+    },
+    {
+      "destinationPath": "Invoice.PaymentMeans.InstructionNote",
+      "sourcePath": "paymentMeans[0].instructionNote",
+      "skipIfEmpty": "true",
+      "skipIfSourceEmpty": "true",
+      "pathResolutionMode": "RELATIVE"
+    },
+
+    {
+      "_comment_section": "SUPPLIER PARTY — country code via expression (B4). All fields mandatory.",
+      "destinationPath": "Invoice.AccountingSupplierParty.Party.PostalAddress.Country.IdentificationCode",
+      "sourceMappingExpression": "@{CountryCode.getTwoDigitCodeFromEnum($accountingSupplierParty.party.postalAddress.country.identificationCode.countryCode)}"
+    },
+    {
+      "destinationPath": "Invoice.AccountingSupplierParty.Party.PartyTaxScheme.CompanyID",
+      "sourcePath": "accountingSupplierParty.party.partyTaxScheme[0].companyID"
+    },
+    {
+      "destinationPath": "Invoice.AccountingSupplierParty.Party.PartyTaxScheme.TaxScheme.ID",
+      "sourcePath": "accountingSupplierParty.party.partyTaxScheme[0].taxScheme.id",
+      "_comment": "B2: plain String at DB level. NOT taxScheme.id.value."
+    },
+    {
+      "destinationPath": "Invoice.AccountingSupplierParty.Party.PartyLegalEntity.RegistrationName",
+      "sourcePath": "accountingSupplierParty.party.partyLegalEntity.registrationName"
+    },
+    {
+      "_comment_iss": "Income Source Sequence (or equivalent regulator-assigned identifier per device). Lives at SellerSupplierParty.Party.PartyIdentification.ID. Sourced from ClientCredentialSetting.incomeSourceSequence (Jordan); rename per country.",
+      "destinationPath": "Invoice.SellerSupplierParty.Party.PartyIdentification.ID",
+      "sourcePath": "sellerSupplierParty.party.partyIdentification[0].id.value"
+    },
+
+    {
+      "_comment_section": "CUSTOMER PARTY — conditional sections for B2B vs B2C. skipIfEmpty cascade (B11).",
+      "destinationPath": "Invoice.AccountingCustomerParty.Party.PartyIdentification.ID.text",
+      "sourcePath": "accountingCustomerParty.party.partyIdentification[0].id.value",
+      "skipIfEmpty": "true"
+    },
+    {
+      "destinationPath": "Invoice.AccountingCustomerParty.Party.PartyIdentification.ID._schemeID",
+      "sourcePath": "accountingCustomerParty.party.partyIdentification[0].id.schemeID",
+      "skipIfEmpty": "true",
+      "_comment": "Buyer ID scheme matrix — TN/NIN/PN per Jordan. Internal API enum may differ (TIN/JO_NIN/PASSPORT) — emit UBL value here."
+    },
+    {
+      "destinationPath": "Invoice.AccountingCustomerParty.Party.PostalAddress.PostalZone",
+      "sourcePath": "accountingCustomerParty.party.postalAddress.postalZone",
+      "skipIfEmpty": "true"
+    },
+    {
+      "destinationPath": "Invoice.AccountingCustomerParty.Party.PostalAddress.CountrySubentity",
+      "sourcePath": "accountingCustomerParty.party.postalAddress.countrySubentity",
+      "skipIfEmpty": "true",
+      "_comment": "Sub-division enum (governorates etc.). Jordan uses HYPHEN: JO-AM, JO-IR. Foreign buyers: omit."
+    },
+    {
+      "destinationPath": "Invoice.AccountingCustomerParty.Party.PostalAddress.Country.IdentificationCode",
+      "sourceMappingExpression": "@{CountryCode.getTwoDigitCodeFromEnum($accountingCustomerParty.party.postalAddress.country.identificationCode.countryCode)}",
+      "skipIfEmpty": "true"
+    },
+    {
+      "destinationPath": "Invoice.AccountingCustomerParty.Party.PartyTaxScheme.TaxScheme.ID",
+      "sourcePath": "accountingCustomerParty.party.partyTaxScheme[0].taxScheme.id",
+      "skipIfEmpty": "true"
+    },
+    {
+      "destinationPath": "Invoice.AccountingCustomerParty.Party.PartyLegalEntity.RegistrationName",
+      "sourcePath": "accountingCustomerParty.party.partyLegalEntity.registrationName",
+      "skipIfEmpty": "true",
+      "_comment": "Mandatory if A/R OR (cash AND > threshold). Threshold from context.yaml."
+    },
+    {
+      "destinationPath": "Invoice.AccountingCustomerParty.Party.AccountingContact.Telephone",
+      "sourcePath": "accountingCustomerParty.party.contact.telephone",
+      "skipIfEmpty": "true",
+      "_comment": "B8: AccountingContact (NOT Contact). Reference XMLs use the former."
+    },
+
+    {
+      "_comment_section": "DOC-LEVEL ALLOWANCE CHARGE — discounts only, ChargeIndicator=false.",
+      "destinationPath": "Invoice.AllowanceCharge.ChargeIndicator",
+      "sourceMappingExpression": "false",
+      "skipIfEmpty": "true"
+    },
+    {
+      "destinationPath": "Invoice.AllowanceCharge.AllowanceChargeReason",
+      "sourceMappingExpression": "discount",
+      "skipIfEmpty": "true"
+    },
+    {
+      "destinationPath": "Invoice.AllowanceCharge.Amount.text",
+      "sourcePath": "allowanceCharge[0].amount.value.value",
+      "_comment": "B1: Money wrapper — .value.value, NOT .value.",
+      "skipIfEmpty": "true",
+      "skipIfSourceEmpty": "true",
+      "pathResolutionMode": "RELATIVE"
+    },
+    {
+      "destinationPath": "Invoice.AllowanceCharge.Amount._currencyID",
+      "sourcePath": "allowanceCharge[0].amount.currencyID",
+      "skipIfEmpty": "true"
+    },
+
+    {
+      "_comment_section": "DOC-LEVEL TAX TOTAL — only for invoice types that carry it (e.g. General Sales). 3-flag pattern (B10).",
+      "destinationPath": "Invoice.TaxTotal.TaxAmount.text",
+      "sourcePath": "taxTotal[0].taxAmount.value.value",
+      "skipIfEmpty": "true",
+      "skipIfSourceEmpty": "true",
+      "pathResolutionMode": "RELATIVE"
+    },
+    {
+      "destinationPath": "Invoice.TaxTotal.TaxAmount._currencyID",
+      "sourcePath": "taxTotal[0].taxAmount.currencyID",
+      "skipIfEmpty": "true"
+    },
+
+    {
+      "_comment_section": "LEGAL MONETARY TOTAL — all 4 fields with Money wrapper (B1).",
+      "destinationPath": "Invoice.LegalMonetaryTotal.TaxExclusiveAmount.text",
+      "sourcePath": "legalMonetaryTotal.taxExclusiveAmount.value.value"
+    },
+    {
+      "destinationPath": "Invoice.LegalMonetaryTotal.TaxExclusiveAmount._currencyID",
+      "sourcePath": "legalMonetaryTotal.taxExclusiveAmount.currencyID"
+    },
+    {
+      "destinationPath": "Invoice.LegalMonetaryTotal.TaxInclusiveAmount.text",
+      "sourcePath": "legalMonetaryTotal.taxInclusiveAmount.value.value"
+    },
+    {
+      "destinationPath": "Invoice.LegalMonetaryTotal.TaxInclusiveAmount._currencyID",
+      "sourcePath": "legalMonetaryTotal.taxInclusiveAmount.currencyID"
+    },
+    {
+      "destinationPath": "Invoice.LegalMonetaryTotal.AllowanceTotalAmount.text",
+      "sourcePath": "legalMonetaryTotal.allowanceTotalAmount.value.value"
+    },
+    {
+      "destinationPath": "Invoice.LegalMonetaryTotal.AllowanceTotalAmount._currencyID",
+      "sourcePath": "legalMonetaryTotal.allowanceTotalAmount.currencyID"
+    },
+    {
+      "destinationPath": "Invoice.LegalMonetaryTotal.PayableAmount.text",
+      "sourcePath": "legalMonetaryTotal.payableAmount.value.value"
+    },
+    {
+      "destinationPath": "Invoice.LegalMonetaryTotal.PayableAmount._currencyID",
+      "sourcePath": "legalMonetaryTotal.payableAmount.currencyID"
+    },
+
+    {
+      "_comment_section": "INVOICE LINES — array iteration. Line-level Money wrapper (B1) + 3-flag pattern (B10).",
+      "destinationPath": "Invoice.InvoiceLine.ID",
+      "sourcePath": "invoiceLine[*].id"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.InvoicedQuantity.text",
+      "sourcePath": "invoiceLine[*].invoicedQuantity.quantity",
+      "_comment": "B1: invoicedQuantity is plain BigDecimal in DB shape (no Money wrap). Confirmed via Mongo record."
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.InvoicedQuantity._unitCode",
+      "sourcePath": "invoiceLine[*].invoicedQuantity.unitCode",
+      "skipIfEmpty": "true",
+      "_comment": "Default PCE per UN/ECE 21. Confirm regulator's accepted UoM list before relying on others."
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.LineExtensionAmount.text",
+      "sourcePath": "invoiceLine[*].lineExtensionAmount.value.value"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.LineExtensionAmount._currencyID",
+      "sourcePath": "invoiceLine[*].lineExtensionAmount.currencyID"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.Item.Name",
+      "sourcePath": "invoiceLine[*].item.name.en"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.Price.PriceAmount.text",
+      "sourcePath": "invoiceLine[*].price.priceAmount.value.value"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.Price.PriceAmount._currencyID",
+      "sourcePath": "invoiceLine[*].price.priceAmount.currencyID"
+    },
+    {
+      "_comment_line_allowance": "Line-level discount: conditional on discount > 0. ChargeIndicator=false (discounts only).",
+      "destinationPath": "Invoice.InvoiceLine.Price.AllowanceCharge.ChargeIndicator",
+      "sourceMappingExpression": "false",
+      "skipIfEmpty": "true",
+      "skipIfSourceEmpty": "true",
+      "pathResolutionMode": "RELATIVE"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.Price.AllowanceCharge.AllowanceChargeReason",
+      "sourceMappingExpression": "DISCOUNT",
+      "skipIfEmpty": "true"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.Price.AllowanceCharge.Amount.text",
+      "sourcePath": "invoiceLine[*].price.allowanceCharge[0].amount.value.value",
+      "skipIfEmpty": "true",
+      "skipIfSourceEmpty": "true",
+      "pathResolutionMode": "RELATIVE"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.Price.AllowanceCharge.Amount._currencyID",
+      "sourcePath": "invoiceLine[*].price.allowanceCharge[0].amount.currencyID",
+      "skipIfEmpty": "true"
+    },
+
+    {
+      "_comment_section": "LINE-LEVEL TAX TOTAL — General Sales only. 3-flag pattern essential (B10).",
+      "destinationPath": "Invoice.InvoiceLine.TaxTotal.TaxAmount.text",
+      "sourcePath": "invoiceLine[*].taxTotal[0].taxAmount.value.value",
+      "skipIfEmpty": "true",
+      "skipIfSourceEmpty": "true",
+      "pathResolutionMode": "RELATIVE"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.TaxTotal.TaxAmount._currencyID",
+      "sourcePath": "invoiceLine[*].taxTotal[0].taxAmount.currencyID",
+      "skipIfEmpty": "true"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.TaxTotal.TaxSubtotal.TaxableAmount.text",
+      "sourcePath": "invoiceLine[*].taxTotal[0].taxSubtotal[0].taxableAmount.value.value",
+      "skipIfEmpty": "true",
+      "skipIfSourceEmpty": "true",
+      "pathResolutionMode": "RELATIVE"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.TaxTotal.TaxSubtotal.TaxableAmount._currencyID",
+      "sourcePath": "invoiceLine[*].taxTotal[0].taxSubtotal[0].taxableAmount.currencyID",
+      "skipIfEmpty": "true"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.TaxTotal.TaxSubtotal.TaxAmount.text",
+      "sourcePath": "invoiceLine[*].taxTotal[0].taxSubtotal[0].taxAmount.value.value",
+      "skipIfEmpty": "true",
+      "skipIfSourceEmpty": "true",
+      "pathResolutionMode": "RELATIVE"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.TaxTotal.TaxSubtotal.TaxAmount._currencyID",
+      "sourcePath": "invoiceLine[*].taxTotal[0].taxSubtotal[0].taxAmount.currencyID",
+      "skipIfEmpty": "true"
+    },
+    {
+      "_comment_taxcategory": "TaxCategory.ID + TaxScheme.ID with B9 attribute split (.text + ._schemeAgencyID + ._schemeID). B3: id is plain enum at DB level.",
+      "destinationPath": "Invoice.InvoiceLine.TaxTotal.TaxSubtotal.TaxCategory.ID.text",
+      "sourcePath": "invoiceLine[*].taxTotal[0].taxSubtotal[0].taxCategory.id",
+      "skipIfEmpty": "true"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.TaxTotal.TaxSubtotal.TaxCategory.ID._schemeAgencyID",
+      "sourceMappingExpression": "6",
+      "skipIfEmpty": "true"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.TaxTotal.TaxSubtotal.TaxCategory.ID._schemeID",
+      "sourceMappingExpression": "UN/ECE 5305",
+      "skipIfEmpty": "true"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.TaxTotal.TaxSubtotal.TaxCategory.Percent",
+      "sourcePath": "invoiceLine[*].taxTotal[0].taxSubtotal[0].taxCategory.percent",
+      "skipIfEmpty": "true"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.TaxTotal.TaxSubtotal.TaxCategory.TaxScheme.ID.text",
+      "sourcePath": "invoiceLine[*].taxTotal[0].taxSubtotal[0].taxCategory.taxScheme.id",
+      "skipIfEmpty": "true"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.TaxTotal.TaxSubtotal.TaxCategory.TaxScheme.ID._schemeAgencyID",
+      "sourceMappingExpression": "6",
+      "skipIfEmpty": "true"
+    },
+    {
+      "destinationPath": "Invoice.InvoiceLine.TaxTotal.TaxSubtotal.TaxCategory.TaxScheme.ID._schemeID",
+      "sourceMappingExpression": "UN/ECE 5153",
+      "skipIfEmpty": "true"
+    },
+
+    {
+      "_comment_section": "OTH SECOND TAX SUBTOTAL — Special Sales only (e.g. Jordan 013/023). Conditional. Confirm regulator validator behavior on consultant query #4.",
+      "destinationPath": "Invoice.InvoiceLine.TaxTotal.TaxSubtotal.TaxCategory.TaxScheme.ID.text",
+      "sourcePath": "invoiceLine[*].taxTotal[0].taxSubtotal[1].taxCategory.taxScheme.id",
+      "skipIfEmpty": "true",
+      "skipIfSourceEmpty": "true",
+      "pathResolutionMode": "RELATIVE",
+      "_comment": "Use OTH for non-VAT second tax (e.g. Special Sales surcharge)."
+    }
+  ]
+}
