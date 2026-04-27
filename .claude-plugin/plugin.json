@@ -1,7 +1,7 @@
 {
   "name": "personal-skills",
   "description": "Vashistha Garg's personal productivity OS — multi-country e-invoicing engineer toolkit. Daily comms, perf tracking, country knowledge, RCAs, PR ops.",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": {
     "name": "Vashistha Garg",
     "email": "vashistha.garg@clear.in"
@@ -19,6 +19,10 @@
     "./skills/v-runbook",
     "./skills/v-incident",
     "./skills/v-pr-day",
-    "./skills/v-friday"
+    "./skills/v-friday",
+    "./skills/v-timed-feature",
+    "./skills/v-mentee",
+    "./skills/v-broadcast",
+    "./skills/v-customer"
   ]
 }
