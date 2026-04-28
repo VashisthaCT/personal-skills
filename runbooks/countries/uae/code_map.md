@@ -62,3 +62,30 @@ PRs touching MEA re-routing infrastructure:
 (Append-only, populated by `country-knowledge-curator`.)
 
 Sources: `project_perf_review_fy26.md` §4 H2 picks 1, 2, 7, 8, 10; `platform_architecture.md` §1, §4.
+
+<!-- Discovery 2026-04-28 from /v-country-brain session re: Tabby VAT rate prints 500 instead of 5 -->
+## Print pipeline (cross-cutting, critical for UAE)
+
+UAE invoices use the `EINVOICE_GLOBAL` print payload type (not `GCC_EINVOICE`) since Nov 2025 — see `pdfgenerator` PR #414 / commit `a5f8afc7 Changes for UAE einvoice schema`. The print path involves a country-aware percent-format normalizer:
+
+| File | Role |
+|---|---|
+| `einvoicing-core/einvoice-interface/src/main/java/com/clear/einvoicing/services/impl/EInvoicePrintServiceImpl.java:71-187` | Sets `isPercentInWholeNumberFormat` flag from the `print-service.wholeNumberPercentCountryCodes` Spring property. Also defines `COUNTRIES_WITH_CUSTOM_PRINT_SCHEMA = Set.of("AE")`. |
+| `einvoicing-core/einvoice-interface/src/main/java/com/clear/einvoicing/mappers/PrintSchemaMapper.java:27-42` | `convertPercentForPrint(percent, isPercentInWholeNumberFormat)` — divides by 100 when flag=true (e.g. `("5","true")` → `"0.05"`). |
+| `einvoicing-core/einvoice-interface/src/main/resources/SchemaMapping/AE/einvoiceDBToPrintRequestMappingAE.json` | UAE-specific print schema mapping. References `convertPercentForPrint` in 7+ places (line 514 etc.). |
+| `pdfgenerator/src/main/kotlin/com/procureli/templates/extensions/Extenstions.kt:103-155` | Payload-type dispatch — routes `EINVOICE_GLOBAL` to `EInvoiceGlobalDocumentData`. |
+| `pdfgenerator/src/main/kotlin/com/procureli/templates/models/einvoiceGlobal/EInvoiceGlobalDocumentData.kt:222, 548, 570` | Three `updatePercent()` methods that multiply `percent × 100`. By design — expects decimal fraction input (0.05) from einvoicing-core, renders as 5. |
+
+**Flow:** einvoicing-core sends `5 → 0.05` (when AE in WHOLE_NUMBER_PERCENT_COUNTRY_CODES) → pdfgenerator multiplies `0.05 × 100 → 5` for display. The system is internally consistent only when the env config is correct.
+
+## Multi-module Spring config (einvoicing-core)
+
+For any `@Value` flag in einvoicing-core, three modules can have divergent `application-prod.yml` defaults:
+
+| Module | Path | Role |
+|---|---|---|
+| `application/` | `application/src/main/resources/application-prod.yml` | Sync REST API server (port 21048). Path: `POST /v1/einvoice/print`. |
+| `einvoicing-workflow-consumer/` | `einvoicing-workflow-consumer/src/main/resources/application-prod.yml` | Kafka/SQS bulk consumer (BulkApi pattern). |
+| `einvoicing-temporal-worker/` | `einvoicing-temporal-worker/src/main/resources/application-prod.yml` | Temporal workflow activities. |
+
+**Rule:** when investigating any `@Value`-bound config in einvoicing-core, diff all 3 `application-prod.yml` files. Real prod values come from Vault env-var overrides — YAML defaults are fallback only.

@@ -34,6 +34,19 @@ For Peppol TDD receiver country (when TDD is in scope): `AE`.
 
 UAE templates 5/6/8/9 route Arabic strings through Kramer; design Jan 12 thread (22 replies): https://cleartaxtech.slack.com/archives/C09TU9UMJJ2/p1768202789046269. Deploy Jan 19 thread (90 replies): https://cleartaxtech.slack.com/archives/C04U10T2DAN/p1768812228954269. The translation service is cross-MEA, not UAE-only.
 
+<!-- Discovery 2026-04-28 from /v-country-brain session re: Tabby VAT rate prints 500 instead of 5 -->
+## Template ID inventory (updated)
+
+UAE templates in active use (per Tabby Apr 27 2026 issue):
+
+| Template ID | Use | Region | Notes |
+|---|---|---|---|
+| 5, 6 | UAE templates | MEA | Kramer Arabic translation. |
+| 8 | UAE template | MEA | Kramer Arabic translation. |
+| 9, 10, 11, 12 | UAE templates (**Tabby uses these**) | EU (post-migration) | Migrated MEA → EU; routed through `EINVOICE_GLOBAL` payload type since Nov 2025 (`pdfgenerator` PR #414). |
+
+The earlier reference to "templates 5/6/8/9" was incomplete — Tabby specifically uses 9, 10, 11, 12 in EU region.
+
 ## TODO sections
 
 - Document type code list.

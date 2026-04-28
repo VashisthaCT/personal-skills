@@ -1,4 +1,23 @@
 # Per-country invoicing context. Stub status: rich = full runbook seeded; stub = 1-page placeholder.
+#
+# Schema:
+#   countries.<cc>:
+#     code: ISO 2-letter code (uppercase)
+#     region: MEA | SEA-IND | SEA | EU
+#     status: dev | dev-complete | live | accreditation-track
+#     regulator: <name>
+#     portal: <URL>
+#     api: <URL>
+#     repos: [list of code-repo dirs in ~/Desktop/]
+#     config_repos: [list of deploy/config repo dirs — cloud-init, ct-app-config, etc.]
+#     vault_path: <Vault path prefix for env-var overrides; null if unknown>
+#     runbook: <relative path to runbook dir>
+#     seed: rich | medium | stub
+#     consultant: <optional>
+#     ...
+#
+# config_repos and vault_path power /v-country-brain Step 3.5 — config-drift enumeration.
+# Without these, the skill can only check YAML defaults, not the actual prod env-var override.
 
 countries:
   jordan:
@@ -9,6 +28,8 @@ countries:
     portal: https://portal.jofotara.gov.jo/en
     api: https://backend.jofotara.gov.jo/core/invoices/
     repos: [einvoicing-core/einvoice-jo, clear-routing/clear-jofotara, clear-sales/einvoice-global]
+    config_repos: [cloud-init, ct-app-config]  # TODO confirm vault_path for JO
+    vault_path: null
     runbook: runbooks/countries/jordan/
     seed: rich
     consultant: Avtax
@@ -22,6 +43,8 @@ countries:
     status: live
     regulator: GSTN/NIC/CBIC
     repos: [e-invoicing-be, clr-irp-be, ingestion-overlord]
+    config_repos: [cloud-init, ct-app-config]
+    vault_path: null  # TODO confirm
     runbook: runbooks/countries/india/
     seed: rich
     notes: "IRN + EWB; NIC1/NIC2 switcher reverted post-Nov 2025 outage; on-call heavy; FTP migration in progress"
@@ -31,10 +54,12 @@ countries:
     region: MEA
     status: live
     regulator: FTA UAE
-    repos: [einvoicing-core/einvoice-ae, clear-routing/clear-ae-fta]
+    repos: [einvoicing-core/einvoice-ae, clear-routing/clear-ae-fta, pdfgenerator]
+    config_repos: [cloud-init, ct-app-config]
+    vault_path: secret/einvoicing-core/  # confirmed Apr 2026 — Vault is runtime source of truth for WHOLE_NUMBER_PERCENT_COUNTRY_CODES
     runbook: runbooks/countries/uae/
     seed: rich
-    notes: "Tabby B2B/B2C live Dec 16 2025; MEA re-routing live Mar 26 2026"
+    notes: "Tabby B2B/B2C live Dec 16 2025; MEA re-routing live Mar 26 2026; Vault key WHOLE_NUMBER_PERCENT_COUNTRY_CODES must include AE"
 
   ksa:
     code: SA
@@ -42,6 +67,8 @@ countries:
     status: live
     regulator: ZATCA (Saudi Arabia)
     repos: [einvoicing-core, ingestion-overlord]
+    config_repos: [cloud-init, ct-app-config]
+    vault_path: null  # TODO confirm
     runbook: runbooks/countries/ksa/
     seed: stub
     notes: "ZATCA SDK 3.4.2/3.4.3 live H1 2025; Sev1 Apr 27 2026 (Redis/licensing)"
@@ -52,6 +79,8 @@ countries:
     status: live
     regulator: LHDN (Malaysia)
     repos: [einvoicing-core/einvoice-my, clear-routing/clear-my-lhdn]
+    config_repos: [cloud-init, ct-app-config]
+    vault_path: null  # TODO confirm
     runbook: runbooks/countries/malaysia/
     seed: stub
 
@@ -61,6 +90,8 @@ countries:
     status: live
     regulator: FOD Financiën (Belgium)
     repos: [einvoicing-core/einvoice-be, clear-peppol-ap]
+    config_repos: [cloud-init, ct-app-config]
+    vault_path: null  # TODO confirm — BE is in WHOLE_NUMBER_PERCENT_COUNTRY_CODES default everywhere
     runbook: runbooks/countries/belgium/
     seed: stub
 
@@ -70,6 +101,8 @@ countries:
     status: accreditation-track
     regulator: PPF (Plateforme Publique de Facturation, France)
     repos: [clear-peppol-ap]
+    config_repos: [cloud-init, ct-app-config]
+    vault_path: null  # TODO confirm
     runbook: runbooks/countries/france/
     seed: stub
     notes: "CEO all-hands milestone Apr 24 2026; user tracking, not coding actively"
@@ -80,6 +113,8 @@ countries:
     status: live
     regulator: KSeF (Poland)
     repos: [einvoicing-core/einvoice-pl]
+    config_repos: [cloud-init, ct-app-config]
+    vault_path: null  # TODO confirm
     runbook: runbooks/countries/poland/
     seed: stub
 

@@ -65,14 +65,14 @@ Restart Claude Code. Then any skill is callable as `/v-<name>`.
 
 ### Code & PRs
 
-#### `/v-pr-prep`
-**What it does:** Pre-flight check on your own PR before requesting reviewers. 10 checks: description structure, JIRA link, AI tag (for L4 evidence), design doc link (for LLD rubric), test coverage, instrumentation, CI status, branch staleness, TODOs in diff, reviewers requested.
-**When to use:** Right before clicking "Request review".
+#### `/v-pr-review`
+**What it does:** Review one or more PRs with deep codebase context. Auto-detects mode by author — your own PRs get a 10-check pre-flight (description structure, JIRA link, AI tag, design doc, coverage, instrumentation, CI, staleness, TODOs, reviewers) **plus** the deep-dive review (and `--auto-fix` rewrites your description via `gh pr edit`). Others' PRs get the deep-dive only — logged to `data/pr-reviews/` so `/v-promo-tracker` counts them toward your SE-II `engineering.code_review` rubric (≥10 substantive reviews/half across ≥3 distinct authors and ≥2 repos). Multi-PR mode reviews sequentially and waits for your `go` between PRs. Never auto-comments on the PR.
+**When to use:** Before requesting review on your own PR. Whenever someone tags you for review.
 **Example:**
 ```
-/v-pr-prep https://github.com/ClearTax/einvoicing-core/pull/1325
+/v-pr-review https://github.com/ClearTax/e-invoicing-be/pull/3742 https://github.com/ClearTax/e-invoicing-be/pull/3743
 ```
-→ pass/fail report + draft PR description rewrite. Add `--auto-fix` to apply the rewrite via `gh pr edit`.
+→ reviews PR #3742 first (Verdict / Correctness / Impact / Test quality / Concerns / TL;DR), waits for your `go`, then reviews #3743. Add `--auto-fix` on a single own-PR to rewrite the description.
 
 #### `/v-pr-day`
 **What it does:** PR ops dashboard — your review queue (sorted by author seniority + age) + your own PR pre-flight + draft DM nags for stale PRs.

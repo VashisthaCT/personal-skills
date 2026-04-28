@@ -7,9 +7,15 @@
 | Ayush Jain | EM (manager) | `U0ABBKV5QDU`, DM `D0AC1AKDJKT` |
 | Abhilash Pareek | EM (referenced for UAE) | `U01C78HQ8Q4` |
 | Aquib Jawed | Engineer (UAE Full Launch Tasks doc owner — Apr) | `U01FSG6S057`, DM `D097RE9HL5Q` |
-| Ritik Raj | Engineer (Tabby UAE) | TODO — Slack ID |
+| Ritik Raj | Engineer (Tabby UAE) | `U036SU2EUUV` |
 | Khushboo Kundnani | Engineer (MEA in EU infra WIP doc owner) | TODO |
 | Vashistha Garg | Engineer (NV-173, Translation Service, TaxCategory fix, Tabby B2B/B2C) | `U087T0SHNCC` |
+| Vaibhav Pawar | Engineer (pdfgenerator print payload — diagnosed VAT 500 bug Apr 27 2026) | `U087MLS1PPX` |
+| Siddhant Nayak | Engineer (Kramer email templating, B2C flow) | `U08H53QB6KG` |
+| Ashraf Nawaz | Engineer (UAE einvoice schema — `pdfgenerator` PR #414, Nov 2025) | TODO — Slack ID |
+| Vinay Hegde | Product / L3 escalation — UAE / Tabby | `UTUA6G9R6` |
+| Jayashree Mohanty | L3 Support — Tabby comms front | `U06C6G2BC2Y` |
+| Gajjala Kullayappa | L2 — Print template / payload triage | `U02TGQ66E3B` |
 
 ## Customers
 
@@ -40,10 +46,15 @@
 - **Tabby specifics** → Ritik Raj → Ayush.
 - **Translation strings / Arabic** → pdfgenerator team → Vashistha.
 - **TaxCategory ordering / UBL nuance** → einvoicing-core team.
+- **PDF print payload / `EINVOICE_GLOBAL` data class** → Vaibhav Pawar (`U087MLS1PPX`).
+- **Kramer email templates / B2C flow** → Siddhant Nayak (`U08H53QB6KG`).
+- **UAE einvoice schema (UBL fields, taxRepresentativeParty etc.)** → Ashraf Nawaz (`pdfgenerator` PR #414).
+- **Vault env-var overrides for einvoicing-core** → DevOps / SRE — confirm via Vault path `secret/einvoicing-core/`.
 
 ## Notes
 
-- TODO: collect Slack IDs for Ritik Raj, Khushboo Kundnani.
+- ~~TODO: collect Slack IDs for Ritik Raj~~ — captured Apr 28 2026 (`U036SU2EUUV`).
+- TODO: collect Slack IDs for Khushboo Kundnani, Ashraf Nawaz.
 - TODO: Capture FTA portal URL and any consultant equivalent to Jordan's Avtax.
 
-Sources: `project_perf_review_fy26.md` §4 H2; §9 Slack permalinks; `data/people.yaml`.
+Sources: `project_perf_review_fy26.md` §4 H2; §9 Slack permalinks; `data/people.yaml`; `_sessions/2026-04-28-100157.md`.
