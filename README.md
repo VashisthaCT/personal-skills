@@ -115,13 +115,13 @@ Restart Claude Code. Then any skill is callable as `/v-<name>`.
 ### Country knowledge
 
 #### `/v-country-brain`
-**What it does:** One-prompt deep-dive on any country in your portfolio — status, in-flight tickets, recent PRs touching that country's code, recent Slack threads, who-to-ask, runbook link.
-**When to use:** Before working on a country you haven't touched in weeks. Or when joining a thread cold.
+**What it does:** Debug-focused deep-dive on country invoicing code. You paste a Slack thread / question / error and a country code — skill reads the actual code in `~/Desktop/<repos>` to answer with file:line citations. Self-corrects the country runbook when discoveries surface (asks `Y/n` per proposed update). Always writes a session log under `runbooks/countries/<cc>/_sessions/` for audit. Drops the old "what happened in country X" briefing — that capability is covered by `/v-status`, `/v-friday`, `/v-country-onboard checklist`.
+**When to use:** When a thread asks "why does X fail for country Y" or "where is X handled in code" — replaces manual grep + read sessions.
 **Example:**
 ```
-/v-country-brain jo
+/v-country-brain ae "https://cleartaxtech.slack.com/archives/.../p1769..."
 ```
-→ synthesized briefing in chat (≤80 lines).
+→ skill fetches the thread, reads `runbooks/countries/uae/code_map.md`, greps relevant repos under `~/Desktop/`, traces the failure path, returns the answer with code citations + asks `Y/n` on any runbook updates it would make.
 
 #### `/v-country-onboard`
 **What it does:** Codifies the **country onboarding playbook**. Six modes that turn a regulator's xlsx + sample XMLs into: schema mapping JSON + 50 mapper-layer tests + 93 E2E XML tests + curl docs HTML + Vault deployment checklist. Encodes 18 Jordan gotchas (Money wrapper, TaxScheme.id plain, country 2-letter, ICV UUID, skipIf cascade, customizationID handling, namespace-config workaround, etc.).
