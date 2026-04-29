@@ -22,11 +22,12 @@ Read in parallel:
 2. **Active projects:** `~/dev/personal-skills/data/active_projects.yaml` — find any project whose keywords match the incident (e.g. NIC switcher → `india`/IRP; FTP → IND FTP migration; Tabby → UAE).
 3. **Country runbook:** if the incident text mentions a country code or known country name (jordan / india / uae / ksa / malaysia / belgium / france / poland) or a region (peppol / gcc / mea), read `~/dev/personal-skills/runbooks/countries/<cc>/runbook.md` (or `runbooks/regions/<id>/runbook.md`). Use it for: prior RCAs in this area, error code references, escalation contacts.
 4. **People:** `~/dev/personal-skills/data/people.yaml` — for Slack IDs / role attribution.
-5. **Metabase schema (GCC scope only, v1):** if the incident touches `ksa` / `uae` / `bahrain` / `kuwait` / `oman` / `qatar` or region `gcc` / `mea`, read in this order:
-   - `~/dev/personal-skills/data/schemas/gcc/query_patterns.yaml` — Q-tz, Q4b, Q6a/b, Q7, Q11, Q12a/b parameterized templates. Use these as starting points; don't write SQL from imagination.
-   - `~/dev/personal-skills/data/schemas/gcc/gotchas.md` — TZ=UTC, identifier mismatch (gstin↔UUID), online vs offline split, camelCase quoting.
-   - `~/dev/personal-skills/data/schemas/gcc/tables/einvoicing_gcc_analytics.yaml` — ClickHouse table catalog (the RCA primary target).
-   - `~/dev/personal-skills/data/schemas/gcc/tables/einvoices_gcc.yaml` — Postgres mirror (used for workspace lookups).
+5. **Metabase schema (GCC scope only, v1):** if the incident touches `ksa` / `uae` / `bahrain` / `kuwait` / `oman` / `qatar` or region `gcc` / `mea`, read all four files:
+   - `~/dev/personal-skills/data/schemas/gcc/relationships.md` — what each table holds, layer-by-layer semantics, JOIN recipes, identifier mismatches. **Start here** — this maps any incident question to the right tables.
+   - `~/dev/personal-skills/data/schemas/gcc/gotchas.md` — engine pitfalls (TZ=UTC, camelCase quoting, hyphen↔underscore DB-name quirk).
+   - `~/dev/personal-skills/data/schemas/gcc/tables/einvoicing_gcc_analytics.yaml` — ClickHouse column catalog (RCA primary target).
+   - `~/dev/personal-skills/data/schemas/gcc/tables/einvoices_gcc.yaml` — Postgres column catalog (workspace lookups, legacy data).
+   **Compose SQL from scratch** for this incident's window, region, and failure mode — do NOT copy queries from past RCAs. The schema knowledge is what enables fresh composition; templated queries would bias the analysis toward the prior incident's shape.
    If the incident is outside GCC scope (e.g. `ind` / `belgium` / `france`), skip this — IND metabase reference is deferred to v2.
 
 ## Step 3 — Pull related signals
@@ -50,8 +51,9 @@ Open the template and replace every `[BRACKETED]` placeholder with grounded cont
 - **Terminology Overview is mandatory.** A non-IND reviewer must follow along.
 - **Keep the verbatim section headers** from the template — panel reviewers look for them.
 - **No name-dropping.** Functional roles only ("L2 team", "engineering", "platform team"). Names belong in Slack permalinks where they appear naturally.
-- **Cite sources inline.** PR numbers, Jira tickets, Slack permalinks at the relevant section. **Every count/bucket/percentage in the Impact section must name the source table inline** — e.g. "Q11 against `einvoicing_gcc_analytics.api_details_v2` JOIN `eInvoiceAuditTrail`". Apoorva-tier preempt — the VP review expects this.
-- **Don't hallucinate column names.** When writing SQL or referencing a metric, the column names come from `data/schemas/gcc/tables/*.yaml`. Postgres uses camelCase (`uniqueIdentifier`, `analyticsEventName` — quoted in queries); ClickHouse uses snake_case (`unique_identifier`, `analytics_event_name`). Cross-engine column copy-paste = silent bug.
+- **Cite sources inline.** PR numbers, Jira tickets, Slack permalinks at the relevant section. **Every count/bucket/percentage in the Impact section must name the source table inline** — e.g. "1,234 invoices terminally REPORTED despite 500 response (`einvoicing_gcc_analytics.api_details_v2` ⨝ `eInvoiceAuditTrail`, window 14:30-15:00 UTC)". Apoorva-tier preempt — the VP review expects this.
+- **Don't hallucinate column names.** Column names come from `data/schemas/gcc/tables/*.yaml`. Postgres uses camelCase (`uniqueIdentifier`, `analyticsEventName` — quoted in queries); ClickHouse uses snake_case (`unique_identifier`, `analytics_event_name`). Cross-engine column copy-paste = silent bug.
+- **Compose SQL fresh per incident.** Don't fit a new incident's data section into a past incident's query shape. `relationships.md` tells you which tables answer which question; column YAMLs give you the names; gotchas tell you the timezone and quoting rules. Compose from those — do not pattern-match on past RCAs.
 
 ## Step 5 — Write the draft file
 

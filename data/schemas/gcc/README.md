@@ -20,11 +20,12 @@ data/schemas/gcc/
 ├── README.md                              ← this file
 ├── tables/
 │   ├── einvoices_gcc.yaml                 ← Postgres, 39 tables (extracted 2026-04-30)
-│   └── einvoicing_gcc_analytics.yaml      ← ClickHouse, 42 tables (extraction pending)
-├── relationships.md                       ← JOIN keys, identifier mismatches (gstin ↔ UUID)
-├── query_patterns.yaml                    ← Q1-Q12 from KSA RCA, parameterized
-└── gotchas.md                             ← TZ=UTC, camelCase quoting, online-vs-offline split
+│   └── einvoicing_gcc_analytics.yaml      ← ClickHouse, 40 tables (extracted 2026-04-30)
+├── relationships.md                       ← What each table holds, JOIN keys, layer-by-layer semantics
+└── gotchas.md                             ← Engine pitfalls — TZ=UTC, camelCase quoting, hyphen↔underscore, etc.
 ```
+
+**No `query_patterns.yaml`** — frozen queries from past incidents would bias the agent toward fitting new incidents into old shapes. The agent composes SQL fresh for each incident using `tables/*.yaml` (column lists) + `relationships.md` (semantics + JOINs) + `gotchas.md` (engine quirks).
 
 ## Refresh recipe
 

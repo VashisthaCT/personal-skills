@@ -148,22 +148,32 @@ If `runbook_pointer` matches `runbooks/countries/(ksa|uae|bahrain|kuwait|oman|qa
 # Queries — <incident-name>
 
 Schemas: ~/dev/personal-skills/data/schemas/gcc/
-- query_patterns.yaml         — Q-tz, Q4b, Q6a/b, Q7, Q11, Q12a/b (parameterized)
-- gotchas.md                  — TZ=UTC, gstin↔UUID, online vs offline, camelCase quoting
-- tables/einvoicing_gcc_analytics.yaml  — ClickHouse (RCA primary target)
-- tables/einvoices_gcc.yaml             — Postgres (raw mirror, workspace lookups)
+- relationships.md                       — what each table holds, JOIN keys, semantic layers
+- gotchas.md                             — engine pitfalls (TZ=UTC, camelCase quoting, etc.)
+- tables/einvoicing_gcc_analytics.yaml   — ClickHouse column catalog (RCA primary target)
+- tables/einvoices_gcc.yaml              — Postgres column catalog (workspace lookups)
 
 ## Window (UTC) — fill once known
 Start: <YYYY-MM-DD HH:MM:SS>
 End:   <YYYY-MM-DD HH:MM:SS>
 
-## Run order (paste outputs below each header)
-- Q-tz-final  — confirm UTC storage before anything else
-- Q12a / Q12b — mongo-side invoice_status distribution (online + offline)
-- Q4b         — HTTP-side response × endpoint × ct_error breakdown
-- Q11         — definitive bucket distribution (the audit-trail JOIN; use for Impact)
-- Q6a / Q6b   — top affected workspaces (gstin + UUID — unify before reporting)
-- Q7          — "already approved by ZATCA" retry response count
+## Questions to answer (typical RCA shape — adapt per incident)
+1. HTTP-side impact — distinct invoices × workspaces affected per endpoint × status code
+2. DB-side state — invoice_status distribution within the window (online + offline)
+3. Terminal classification — for failed responses, what state did they actually end in?
+4. Top workspaces — by impact, unifying gstin and UUID identifiers
+5. Regulator-side verification — did affected invoices reach the regulator?
+
+For each, **compose SQL grounded in the schema files** for THIS incident's window and scope.
+Do NOT copy-paste queries from past RCAs — different incidents have different filters,
+endpoints, and bucketing rules. Paste the SQL you actually run + its output below.
+
+## Logs
+- [HH:MM IST] Query: <intent>
+  ```sql
+  ...
+  ```
+  Output: <paste or summarize>
 ```
 
 If `runbook_pointer` doesn't match GCC scope (e.g. India, Belgium, France) or is `null`, skip this file. `/v-rca` will look for it later and will skip-with-warning if absent.
