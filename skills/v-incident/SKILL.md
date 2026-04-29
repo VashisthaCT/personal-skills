@@ -140,6 +140,34 @@ channel: <slack channel id or name — TBD if not yet assigned>
 
 Pre-fill what can be inferred from inputs: `incident`, `severity`, `started_at` (use current time IST), `runbook_pointer` (Step 2). Leave the rest as listed defaults for the user to fill while paging on the incident.
 
+### `queries.md` (only if Step 2 resolved to a GCC-scope runbook)
+
+If `runbook_pointer` matches `runbooks/countries/(ksa|uae|bahrain|kuwait|oman|qatar)/` or `runbooks/regions/(gcc|mea)/`, also write `queries.md`:
+
+```
+# Queries — <incident-name>
+
+Schemas: ~/dev/personal-skills/data/schemas/gcc/
+- query_patterns.yaml         — Q-tz, Q4b, Q6a/b, Q7, Q11, Q12a/b (parameterized)
+- gotchas.md                  — TZ=UTC, gstin↔UUID, online vs offline, camelCase quoting
+- tables/einvoicing_gcc_analytics.yaml  — ClickHouse (RCA primary target)
+- tables/einvoices_gcc.yaml             — Postgres (raw mirror, workspace lookups)
+
+## Window (UTC) — fill once known
+Start: <YYYY-MM-DD HH:MM:SS>
+End:   <YYYY-MM-DD HH:MM:SS>
+
+## Run order (paste outputs below each header)
+- Q-tz-final  — confirm UTC storage before anything else
+- Q12a / Q12b — mongo-side invoice_status distribution (online + offline)
+- Q4b         — HTTP-side response × endpoint × ct_error breakdown
+- Q11         — definitive bucket distribution (the audit-trail JOIN; use for Impact)
+- Q6a / Q6b   — top affected workspaces (gstin + UUID — unify before reporting)
+- Q7          — "already approved by ZATCA" retry response count
+```
+
+If `runbook_pointer` doesn't match GCC scope (e.g. India, Belgium, France) or is `null`, skip this file. `/v-rca` will look for it later and will skip-with-warning if absent.
+
 ## Step 4 — Self-DM draft
 
 Compose a single Slack-formatted message to self-DM `D088362AS65` via `slack_send_message_draft`:
@@ -165,6 +193,7 @@ Don't auto-Slack-post. Don't create a Drive doc. Don't touch the channel. The us
 ## Verifiable success criteria
 
 - 4 files exist at `~/dev/personal-skills/data/incidents/<incident-name>/`: `timeline.md`, `rca.md`, `comms_drafts.md`, `meta.yaml`.
+- 5th file `queries.md` exists IFF Step 2 resolved to a GCC-scope runbook (ksa/uae/bahrain/kuwait/oman/qatar/gcc/mea).
 - `timeline.md` has the first event line pre-seeded with `Incident detected: <description>` and an IST timestamp.
 - `meta.yaml` has `incident`, `severity`, `started_at`, `runbook_pointer` pre-filled (last is `null` if no slug match).
 - A self-DM draft exists in `D088362AS65` with the folder path + 3 actions.

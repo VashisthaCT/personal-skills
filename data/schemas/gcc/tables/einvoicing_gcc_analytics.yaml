@@ -1,0 +1,845 @@
+# einvoicing_gcc_analytics — schema dump
+# Engine: clickhouse
+# Source: OCI Metabase (clickhouse system catalog)
+# Tables: 40
+# Total columns: 712
+# Last extracted: 2026-04-30
+#
+# Per-table column maps. Tier classification, JOIN keys,
+# and enum values live in companion files (relationships.md, gotchas.md,
+# query_patterns.yaml).
+
+database: einvoicing_gcc_analytics
+engine: clickhouse
+tables:
+  aggregate_validation_errors:
+    primary_key: [workspace_id, taxpayer_org_id, generationDate, errorMessage]
+    partition_key: [org_id]
+    columns:
+      workspace_id: String
+      org_id: String
+      taxpayer_parent_org_id: String
+      taxpayer_org_id: String
+      branch_org_id: "Nullable(String)"
+      generationDate: DateTime
+      sellerIdentifier: String
+      errorCode: String
+      count: UInt32
+      caller: String
+      errorMessage: String
+      errorSource: String
+      is_invalidated: Bool
+      node_ids: "Array(String)"
+      validationType: String
+      branch: String
+      gstin: String
+  api_details_v2:
+    primary_key: [created_at, unique_id]
+    columns:
+      _id: "FixedString(24)"
+      user_id: "Nullable(UUID)"
+      unique_identifier: String
+      status: String
+      time_taken: UInt32
+      non_nic_time_taken: UInt32
+      non_nic_platform_time_taken: UInt32
+      error: String
+      request_method: "LowCardinality(String)"
+      caller: String
+      request_id: String
+      pan: String
+      gstin: String
+      branch: String
+      owner_id: "Nullable(UUID)"
+      span_id: String
+      analytics_event_name: String
+      user_session_id: String
+      ct_error: Bool
+      created_at: "DateTime64(6)"
+      qr_code_status: "LowCardinality(String)"
+      document_type: "LowCardinality(String)"
+      invoice_type: "LowCardinality(String)"
+      warning_message: String
+      message: String
+      invoice_status: "LowCardinality(String)"
+      unique_id: String
+      invoice_number: String
+      document_date: String
+      device_type: String
+      device_id: String
+      industry: String
+      device_id_2: String
+      is_phase1: "Nullable(Bool)"
+      number_of_line_items: UInt16
+      workspace_id: "Nullable(UUID)"
+      workspace_id_from_branch: "Nullable(UUID)"
+      workspace_id_from_gstin: "Nullable(UUID)"
+      workspace_id_from_pan: "Nullable(UUID)"
+      workspace_id_fin: "Nullable(UUID)"
+      node_type: "LowCardinality(String)"
+      needed_for_usage_view: Bool
+      invoice_created_phase_1: Bool
+      invoice_created_phase_2: Bool
+  branches_raw:
+    primary_key: [external_id, updated_at]
+    columns:
+      id: String
+      external_id: String
+      name: String
+      address: String
+      dispatch_addresses: String
+      image: String
+      upi_id: String
+      gstin_id: String
+      is_deleted: "LowCardinality(String)"
+      created_at: "DateTime64(6)"
+      updated_at: "DateTime64(6)"
+      created_by: String
+      updated_by: String
+      metadata: String
+      legal_name: String
+      trade_name: String
+      bank_account_details: String
+      signature_image: String
+      products_associated: String
+      version: "LowCardinality(String)"
+      region: "LowCardinality(String)"
+      node_type: "LowCardinality(String)"
+      user_ip_address: String
+  eInvoiceAuditTrail:
+    primary_key: [updatedAt]
+    partition_key: [updatedAt]
+    columns:
+      gstinOrgId: String
+      _class: String
+      apiPriority: String
+      spanId: String
+      traceId: String
+      response: String
+      request: String
+      auditType: String
+      operation: String
+      userId: String
+      updatedAt: "DateTime64(6)"
+      panOrgId: String
+      createdAt: "DateTime64(6)"
+      entity: String
+      nodeId: String
+      branchOrgId: String
+      _id: String
+  eInvoice_gcc_metadata:
+    primary_key: [updatedAt]
+    columns:
+      _id: String
+      taxpayerOrgId: String
+      issueDate: String
+      issueTime: String
+      invoiceNumber: String
+      invoiceTotalAmount: Float64
+      taxTotalAccCurrency: Float64
+      totalAmountWithoutVat: Float64
+      taxableAmount: Float64
+      taxAmount: Float64
+      createdAt: "DateTime64(6)"
+      updatedAt: "DateTime64(6)"
+      uniqueIdentifier: String
+      invoiceTypeCode: String
+      status: String
+      einvoiceStatus: String
+  eInvoices_gcc_metadata_status:
+    primary_key: [updatedAt]
+    columns:
+      _id: String
+      createdAt: "DateTime64(6)"
+      updatedAt: "DateTime64(6)"
+      status: String
+      einvoiceStatus: String
+      uniqueIdentifier: String
+  eInvoices_gcc_metadata_status_old:
+    primary_key: [updatedAt]
+    columns:
+      _id: String
+      createdAt: "DateTime64(6)"
+      updatedAt: "DateTime64(6)"
+      status: String
+      einvoiceStatus: String
+      unique_identifier: String
+  einvoice_gcc:
+    primary_key: [id, unique_identifier]
+    partition_key: [week]
+    columns:
+      id: String
+      unique_identifier: String
+      taxpayer_parent_org_id: String
+      taxpayer_org_id: String
+      taxpayer_id_number: String
+      is_deleted: "Nullable(Bool)"
+      status: "LowCardinality(String)"
+      profile_id: String
+      invoice_id_en: String
+      issue_date_local_date: "Nullable(DateTime)"
+      issue_time_local_time: "Nullable(DateTime)"
+      invoice_type_code_name: "LowCardinality(String)"
+      invoice_type_code_value: String
+      document_currency_code: "LowCardinality(String)"
+      tax_currency_code: "LowCardinality(String)"
+      supplier_company_id: String
+      supplier_tax_scheme_id: "LowCardinality(String)"
+      payment_means_code: "Array(String)"
+      line_extension_amount_currency_id: "LowCardinality(String)"
+      line_extension_amount_value: "Nullable(Float32)"
+      tax_exclusive_amount_currency_id: "LowCardinality(String)"
+      tax_exclusive_amount_value: "Nullable(Float32)"
+      tax_inclusive_amount_currency_id: "LowCardinality(String)"
+      tax_inclusive_amount_value: "Nullable(Float32)"
+      prepaid_amount_currency_id: "LowCardinality(String)"
+      prepaid_amount_value: "Nullable(Float32)"
+      payable_amount_currency_id: "LowCardinality(String)"
+      payable_amount_value: "Nullable(Float32)"
+      tax_totals: String
+      invoice_line: String
+      is_modified: "Nullable(Bool)"
+      created_at: "Nullable(DateTime)"
+      updated_at: "Nullable(DateTime)"
+      last_updated_by: String
+      einvoice_status: "LowCardinality(String)"
+      is_offline_success: "Nullable(Bool)"
+      method_of_generation: "LowCardinality(String)"
+      branch_org_id: String
+      ubl_version_id: String
+      customer_tax_scheme_id: String
+      actual_delivery_date_local_date: "Array(Nullable(DateTime))"
+      week: String
+      workspace_id: "Nullable(UUID)"
+  einvoice_gcc_temp:
+    primary_key: [id, unique_identifier]
+    partition_key: [week]
+    columns:
+      id: String
+      unique_identifier: String
+      taxpayer_parent_org_id: String
+      taxpayer_org_id: String
+      taxpayer_id_number: String
+      is_deleted: "Nullable(Bool)"
+      status: "LowCardinality(String)"
+      profile_id: String
+      invoice_id_en: String
+      issue_date_local_date: "Nullable(DateTime)"
+      issue_time_local_time: "Nullable(DateTime)"
+      invoice_type_code_name: "LowCardinality(String)"
+      invoice_type_code_value: String
+      document_currency_code: "LowCardinality(String)"
+      tax_currency_code: "LowCardinality(String)"
+      supplier_company_id: String
+      supplier_tax_scheme_id: "LowCardinality(String)"
+      payment_means_code: "Array(String)"
+      line_extension_amount_currency_id: "LowCardinality(String)"
+      line_extension_amount_value: "Nullable(Float32)"
+      tax_exclusive_amount_currency_id: "LowCardinality(String)"
+      tax_exclusive_amount_value: "Nullable(Float32)"
+      tax_inclusive_amount_currency_id: "LowCardinality(String)"
+      tax_inclusive_amount_value: "Nullable(Float32)"
+      prepaid_amount_currency_id: "LowCardinality(String)"
+      prepaid_amount_value: "Nullable(Float32)"
+      payable_amount_currency_id: "LowCardinality(String)"
+      payable_amount_value: "Nullable(Float32)"
+      tax_totals: String
+      invoice_line: String
+      is_modified: "Nullable(Bool)"
+      created_at: "Nullable(DateTime)"
+      updated_at: "Nullable(DateTime)"
+      last_updated_by: String
+      einvoice_status: "LowCardinality(String)"
+      is_offline_success: "Nullable(Bool)"
+      method_of_generation: "LowCardinality(String)"
+      branch_org_id: String
+      ubl_version_id: String
+      customer_tax_scheme_id: String
+      actual_delivery_date_local_date: "Array(Nullable(DateTime))"
+      week: String
+      workspace_id: "Nullable(UUID)"
+  einvoice_generation_metrics:
+    primary_key: [_id]
+    columns:
+      _id: String
+      count: UInt64
+      caller: String
+      phase: "LowCardinality(String)"
+      zatcaResponseTime: UInt64
+      methodOfGeneration: String
+      ctResponseTime: UInt64
+      numberOfLineItems: UInt64
+      documentType: "LowCardinality(String)"
+      errorSource: "LowCardinality(String)"
+      generationSuccess: String
+      isSuccessCall: "LowCardinality(String)"
+      userId: String
+      requestId: String
+      spanId: String
+      tin: String
+      vat: String
+      branch: String
+      uniqueIdentifier: String
+      documentDate: String
+      success: Bool
+      created_at: DateTime
+  einvoiceexternalaudittrail:
+    primary_key: [updatedAt]
+    columns:
+      service: String
+      operation: String
+      nodeId: String
+      userId: String
+      spanId: String
+      traceId: String
+      request_body: String
+      response_queryString: String
+      response_body: String
+      createdAt: "DateTime64(6)"
+      updatedAt: "DateTime64(6)"
+  eventtracking:
+    primary_key: [created_at]
+    columns:
+      _id: "Nullable(String)"
+      referrer: "Nullable(String)"
+      ip: "Nullable(String)"
+      action: "Nullable(String)"
+      created_at: "DateTime64(6)"
+      label: "Nullable(String)"
+      sessionid: "Nullable(String)"
+      category: "Nullable(String)"
+      user_agent: "Nullable(String)"
+      anon_id: "Nullable(String)"
+  gcc_client_list:
+    primary_key: [tin, workspace_id]
+    columns:
+      org_name: String
+      vat: String
+      phase: "LowCardinality(String)"
+      production_status: "LowCardinality(String)"
+      tin: String
+      purchase_docs_b2b: "Nullable(Int32)"
+      purchase_docs_b2c: "Nullable(Int32)"
+      workspace_id: String
+      csm_name: String
+      customer_id: String
+      master_admin_email: String
+  gcc_qr_code:
+    primary_key: [created_at]
+    partition_key: [created_at]
+    columns:
+      _id: String
+      id: String
+      ownerId: String
+      isSuccess: UInt8
+      status: Int64
+      timeTaken: Int64
+      errorCode: "LowCardinality(String)"
+      errorMessage: String
+      requestUserAgent: String
+      requestId: String
+      userId: String
+      mode: "LowCardinality(String)"
+      authenticationMethod: "LowCardinality(String)"
+      caller: String
+      sellerName: String
+      vatNumber: String
+      timeStamp: String
+      vatTotal: String
+      invTotal: String
+      created_at: "DateTime64(6)"
+  gstins_raw:
+    primary_key: [external_id, updated_at]
+    columns:
+      id: String
+      external_id: String
+      name: String
+      gstin: String
+      address: String
+      dispatch_addresses: String
+      image: "LowCardinality(String)"
+      upi_id: String
+      pan_id: String
+      is_deleted: "LowCardinality(String)"
+      created_at: "DateTime64(6)"
+      updated_at: "DateTime64(6)"
+      created_by: String
+      updated_by: String
+      metadata: String
+      legal_name: String
+      trade_name: String
+      bank_account_details: String
+      signature_image: String
+      nature_of_business: String
+      products_associated: String
+      version: "LowCardinality(String)"
+      region: "LowCardinality(String)"
+      node_type: "LowCardinality(String)"
+      tax_payer_identification_number: String
+      corporate_identification_number: String
+      gstin_description: String
+      gstin_website: String
+      is_vendor: "LowCardinality(String)"
+      gstin_type: "LowCardinality(String)"
+      division_name: String
+      user_ip_address: String
+  invoice_details_test_mv:
+    columns:
+      unique_id: String
+      "last_valueState(time_taken)": "AggregateFunction(anyLast, UInt32)"
+      "last_valueState(non_nic_time_taken)": "AggregateFunction(anyLast, UInt32)"
+      "last_valueState(caller)": "AggregateFunction(anyLast, String)"
+      "last_valueState(gstin)": "AggregateFunction(anyLast, String)"
+      "countDistinctState(span_id)": "AggregateFunction(countDistinct, Nullable(UUID))"
+      "last_valueState(ct_error)": "AggregateFunction(anyLast, Bool)"
+      "first_valueState(created_at)": "AggregateFunction(any, DateTime64(6))"
+      "last_valueState(created_at)": "AggregateFunction(anyLast, DateTime64(6))"
+      "last_valueState(qr_code_status)": "AggregateFunction(anyLast, LowCardinality(String))"
+      "last_valueState(document_type)": "AggregateFunction(anyLast, LowCardinality(String))"
+      "last_valueState(invoice_status)": "AggregateFunction(anyLast, LowCardinality(String))"
+      "last_valueState(is_phase1)": "AggregateFunction(anyLast, Nullable(Bool))"
+      "last_valueState(workspace_id)": "AggregateFunction(anyLast, Nullable(UUID))"
+      "last_valueState(analytics_event_name)": "AggregateFunction(anyLast, String)"
+  invoice_details_v10:
+    primary_key: [is_phase1, unique_id, created_date]
+    columns:
+      is_phase1: Bool
+      unique_id: String
+      created_date: Date
+      user_id: "AggregateFunction(any, Nullable(UUID))"
+      time_taken_success_phase1: "AggregateFunction(argMinIf, UInt32, DateTime64(6), Bool)"
+      time_taken_success_phase2: "AggregateFunction(argMinIf, UInt32, DateTime64(6), Bool)"
+      time_taken_failure_phase1: "AggregateFunction(avgIf, UInt32, Nullable(Bool))"
+      time_taken_failure_phase2: "AggregateFunction(avgIf, UInt32, Nullable(Bool))"
+      non_nic_time_taken_success_phase1: "AggregateFunction(argMinIf, UInt32, DateTime64(6), Bool)"
+      non_nic_time_taken_success_phase2: "AggregateFunction(argMinIf, UInt32, DateTime64(6), Bool)"
+      non_nic_time_taken_failure_phase1: "AggregateFunction(avgIf, UInt32, Nullable(Bool))"
+      non_nic_time_taken_failure_phase2: "AggregateFunction(avgIf, UInt32, Nullable(Bool))"
+      non_nic_platform_time_taken_success_phase1: "AggregateFunction(argMinIf, UInt32, DateTime64(6), Bool)"
+      non_nic_platform_time_taken_success_phase2: "AggregateFunction(argMinIf, UInt32, DateTime64(6), Bool)"
+      non_nic_platform_time_taken_failure_phase1: "AggregateFunction(avgIf, UInt32, Nullable(Bool))"
+      non_nic_platform_time_taken_failure_phase2: "AggregateFunction(avgIf, UInt32, Nullable(Bool))"
+      caller: "AggregateFunction(any, String)"
+      gstin: "AggregateFunction(any, String)"
+      branch: "AggregateFunction(any, String)"
+      failure_attempts: "AggregateFunction(uniqExactIf, String, Bool)"
+      total_attempts: "AggregateFunction(uniqExact, String)"
+      count_ct_error_true: "AggregateFunction(uniqExactIf, String, Bool)"
+      count_zatca_error_true: "AggregateFunction(uniqExactIf, String, Bool)"
+      created_at: "AggregateFunction(argMin, DateTime64(6), DateTime64(6))"
+      created_at_first_successful_at: "AggregateFunction(argMinIf, DateTime64(6), DateTime64(6), Bool)"
+      created_at_latest_successful_at: "AggregateFunction(argMaxIf, DateTime64(6), DateTime64(6), Bool)"
+      qr_code_status: "AggregateFunction(argMax, String, DateTime64(6))"
+      issue_date: "AggregateFunction(argMaxIf, Date, DateTime64(6), Bool)"
+      document_type: "AggregateFunction(any, String)"
+      invoice_type: "AggregateFunction(any, String)"
+      device_id: "AggregateFunction(argMax, String, DateTime64(6))"
+      industry: "AggregateFunction(any, String)"
+      owner_id: "AggregateFunction(any, Nullable(UUID))"
+      workspace_id: "AggregateFunction(argMinIf, Nullable(UUID), DateTime64(6), Bool)"
+      node_type: "AggregateFunction(any, LowCardinality(String))"
+      number_of_line_items: "AggregateFunction(argMinIf, UInt16, DateTime64(6), Bool)"
+      sync_or_async: "AggregateFunction(argMinIf, LowCardinality(String), DateTime64(6), Bool)"
+  invoice_details_view:
+    columns:
+      unique_id: String
+      user_id: "Nullable(UUID)"
+      time_taken: UInt32
+      non_nic_time_taken: UInt32
+      non_nic_platform_time_taken: UInt32
+      caller: String
+      gstin: String
+      branch: String
+      failure_attempts: UInt64
+      total_attempts: UInt64
+      ct_error: Bool
+      updated_at: "DateTime64(6)"
+      qr_code_status: String
+      document_type: String
+      invoice_type: String
+      invoice_status: String
+      device_id: String
+      device_id_2: String
+      is_phase1: "Nullable(Bool)"
+      industry: String
+      owner_id: "Nullable(UUID)"
+      number_of_line_items: UInt16
+      node_type: String
+      workspace_id: "Nullable(UUID)"
+      analytics_event_name: String
+  licenses:
+    primary_key: [updatedAt]
+    columns:
+      _class: String
+      _id: String
+      applicableForReminderMails: UInt8
+      createdAt: "DateTime64(6)"
+      createdBy: String
+      csmDetail: String
+      endAt: "DateTime64(6)"
+      extendedEndAt: "DateTime64(6)"
+      extensionDays: Int32
+      externalId: String
+      isTestLicense: UInt8
+      isTrial: UInt8
+      kamDetail: String
+      overRiddenResourceConstraints: String
+      planId: String
+      product: String
+      salesforceAccountId: String
+      salesforceAssetId: String
+      salesforceOrderId: String
+      startAt: "DateTime64(6)"
+      status: String
+      updatedAt: "DateTime64(6)"
+      updatedBy: String
+      workspaceMappings: String
+      romdetail: String
+  matchingTasks:
+    primary_key: [updatedAt]
+    columns:
+      _class: String
+      _id: String
+      activeFeatures: String
+      childNodeIds: String
+      corrupted: UInt8
+      createdAt: "DateTime64(6)"
+      errorInfo: String
+      exception: String
+      isDeleted: UInt8
+      licenseProduct: String
+      matchingTaskStats: String
+      matchingType: String
+      nodeName: String
+      nodeType: String
+      notificationChannelId: String
+      orgId: String
+      ownerId: String
+      reconCompletedTime: "DateTime64(6)"
+      reconFeatureType: String
+      requestData: String
+      responseData: String
+      retryCounter: Int32
+      taskId: String
+      taskStatus: String
+      timingProfile: String
+      totalLinksCreated: Int32
+      triggerSource: String
+      updatedAt: "DateTime64(6)"
+      userIp: String
+      userName: String
+      workspaceId: String
+  organisations_raw:
+    primary_key: [external_id, updated_at]
+    columns:
+      id: String
+      external_id: String
+      name: String
+      address: String
+      image: String
+      is_deleted: "LowCardinality(String)"
+      created_at: "DateTime64(6)"
+      updated_at: "DateTime64(6)"
+      created_by: String
+      updated_by: String
+      metadata: String
+      legal_name: String
+      trade_name: String
+      signature_image: String
+      billing_gstin: String
+      billing_pan: String
+      products_associated: String
+      version: "LowCardinality(String)"
+      region: "LowCardinality(String)"
+      node_type: "LowCardinality(String)"
+      sf_account_id: String
+      workspace_id: String
+      user_ip_address: String
+  organisations_raw_test:
+    primary_key: [external_id, updated_at]
+    columns:
+      id: String
+      external_id: String
+      name: String
+      address: String
+      image: String
+      is_deleted: "LowCardinality(String)"
+      created_at: "DateTime64(6)"
+      updated_at: "DateTime64(6)"
+      created_by: String
+      updated_by: String
+      metadata: String
+      legal_name: String
+      trade_name: String
+      signature_image: String
+      billing_gstin: String
+      billing_pan: String
+      products_associated: String
+      version: "LowCardinality(String)"
+      region: "LowCardinality(String)"
+      node_type: "LowCardinality(String)"
+      sf_account_id: String
+      workspace_id: String
+      user_ip_address: String
+  pans_raw:
+    primary_key: [external_id, updated_at]
+    columns:
+      id: String
+      external_id: String
+      name: String
+      pan: String
+      address: String
+      dispatch_addresses: String
+      image: String
+      upi_id: String
+      organisation_id: String
+      is_deleted: "LowCardinality(String)"
+      created_at: "DateTime64(6)"
+      updated_at: "DateTime64(6)"
+      created_by: String
+      updated_by: String
+      metadata: String
+      legal_name: String
+      trade_name: String
+      bank_account_details: String
+      signature_image: String
+      products_associated: String
+      version: "LowCardinality(String)"
+      region: "LowCardinality(String)"
+      node_type: "LowCardinality(String)"
+      is_vendor: "LowCardinality(String)"
+      user_ip_address: String
+  pans_raw_test:
+    primary_key: [external_id, updated_at]
+    columns:
+      id: String
+      external_id: String
+      name: String
+      pan: String
+      address: String
+      dispatch_addresses: String
+      image: String
+      upi_id: String
+      organisation_id: String
+      is_deleted: "LowCardinality(String)"
+      created_at: "DateTime64(6)"
+      updated_at: "DateTime64(6)"
+      created_by: String
+      updated_by: String
+      metadata: String
+      legal_name: String
+      trade_name: String
+      bank_account_details: String
+      signature_image: String
+      products_associated: String
+      version: "LowCardinality(String)"
+      region: "LowCardinality(String)"
+      node_type: "LowCardinality(String)"
+      is_vendor: "LowCardinality(String)"
+      user_ip_address: String
+  unique_id_to_phase:
+    primary_key: [unique_id, is_phase1]
+    columns:
+      unique_id: String
+      is_phase1: UInt8
+  user_workspace_mapping_raw:
+    primary_key: [user_id, workspace_id]
+    columns:
+      id: String
+      email: String
+      user_id: String
+      workspace_id: String
+      first_name: String
+      last_name: String
+      is_invitation_pending: "LowCardinality(String)"
+      invitation_id: String
+      created_at: "DateTime64(3)"
+      updated_at: "DateTime64(3)"
+      is_default_workspace: "LowCardinality(String)"
+      user_type: "LowCardinality(String)"
+      expire_at: String
+      user_ip_address: String
+      created_by: String
+      deleted_by: String
+      source: String
+  validation_errors:
+    primary_key: [id]
+    columns:
+      created_at: "DateTime64(6)"
+      id: String
+      requestId: String
+      spanId: String
+      userId: String
+      pan: String
+      gstin: String
+      branch: String
+      ownerId: String
+      _id: String
+      authenticationMethod: "LowCardinality(String)"
+      caller: String
+      uniqueIdentifier: String
+      errorMessage: String
+      errorCode: "LowCardinality(String)"
+      errorSource: String
+      validationType: "LowCardinality(String)"
+      analyticsEventName: "LowCardinality(String)"
+      requestUserAgent: String
+      workspaceId: String
+      organisationId: String
+      taxpayerParentOrgId: String
+      taxpayerOrgId: String
+      branchOrgId: String
+  validation_errors_temp:
+    primary_key: [id]
+    columns:
+      created_at: "DateTime64(6)"
+      id: String
+      requestId: String
+      spanId: String
+      userId: String
+      pan: String
+      gstin: String
+      branch: String
+      ownerId: String
+      _id: String
+      authenticationMethod: "LowCardinality(String)"
+      caller: String
+      uniqueIdentifier: String
+      errorMessage: String
+      errorCode: "LowCardinality(String)"
+      errorSource: String
+      validationType: "LowCardinality(String)"
+      analyticsEventName: "LowCardinality(String)"
+      requestUserAgent: String
+      new_column: "LowCardinality(String)"
+      workspaceId: String
+      organisationId: String
+      taxpayerParentOrgId: String
+      taxpayerOrgId: String
+  webappeventtracking:
+    primary_key: [createtimestamp]
+    partition_key: [createtimestamp]
+    columns:
+      _id: String
+      createtimestamp: "DateTime64(6)"
+      referrer: String
+      userAgent: String
+      ip: String
+      sessionid: String
+      anonid: String
+      appVersion: "LowCardinality(String)"
+      appOrigin: String
+      page_title: String
+      page_url: String
+      page_path: String
+      page_hash: String
+      page_search: String
+      page_width: String
+      page_height: String
+      user_id: String
+      user_session_id: String
+      app_origin: String
+      app_version: String
+      ab_test: String
+      platform: "LowCardinality(String)"
+      category: "LowCardinality(String)"
+      action: String
+      label: String
+      value: Float64
+      interaction: UInt8
+      utm_campaign: String
+      utm_medium: String
+      utm_source: "LowCardinality(String)"
+      utm_term: String
+      utm_content: String
+      custom_dimension_1: String
+      custom_dimension_2: String
+      custom_dimension_3: String
+      custom_dimension_4: String
+      request_id: String
+      email: String
+      userid: String
+      panId: String
+      gstinId: String
+      branchId: String
+  workspace_branch_dict:
+    columns:
+      branch_id: "Nullable(UUID)"
+      workspace_id: "Nullable(UUID)"
+      node_type: String
+  workspace_branch_mapping:
+    primary_key: [branch_id]
+    columns:
+      workspace_id: UUID
+      branch_id: UUID
+      node_type: String
+  workspace_enterprise_mapping:
+    primary_key: [workspace_id]
+    columns:
+      sf_product_email__c: String
+      sf_master_admin_email: String
+      sf_Account_name: String
+      sfaccountid: String
+      workspace_id: String
+      po_to_final: String
+      status_final: String
+      b2b_docs_final: String
+      b2c_docs_final: String
+  workspace_gstin_dict:
+    columns:
+      gstin_id: "Nullable(UUID)"
+      workspace_id: "Nullable(UUID)"
+      node_type: String
+  workspace_gstin_mapping:
+    primary_key: [gstin_id]
+    columns:
+      workspace_id: UUID
+      gstin_id: UUID
+      node_type: String
+  workspace_pan_dict:
+    columns:
+      pan_id: "Nullable(UUID)"
+      workspace_id: "Nullable(UUID)"
+      node_type: String
+  workspace_pan_dict_2:
+    columns:
+      pan_id: String
+      workspace_id: String
+      node_type: String
+  workspace_pan_dict_test:
+    columns:
+      pan_id: "Nullable(UUID)"
+      workspace_id: "Nullable(UUID)"
+      node_type: String
+  workspace_pan_mapping:
+    primary_key: [pan_id]
+    columns:
+      workspace_id: UUID
+      pan_id: UUID
+      node_type: String
+  workspace_pan_mapping_test:
+    primary_key: [pan_id]
+    columns:
+      workspace_id: UUID
+      pan_id: UUID
+      node_type: String
+  workspaces_raw:
+    primary_key: [external_id, updated_at]
+    columns:
+      id: String
+      external_id: String
+      name: String
+      address: String
+      image: String
+      is_deleted: "LowCardinality(String)"
+      created_at: "DateTime64(6)"
+      updated_at: "DateTime64(6)"
+      created_by: String
+      updated_by: String
+      type: "LowCardinality(String)"
+      billing_details: String
+      parent_workspace_id: String
+      sf_account_id: String
+      metadata: String
+      security_settings: String
+      user_ip_address: String

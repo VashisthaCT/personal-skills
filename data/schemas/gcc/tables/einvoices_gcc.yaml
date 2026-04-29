@@ -1,0 +1,934 @@
+# einvoices_gcc — schema dump
+# Engine: postgresql
+# Source: OCI Metabase (postgres system catalog)
+# Tables: 39
+# Total columns: 838
+# Last extracted: 2026-04-30
+#
+# Per-table column maps. Tier classification, JOIN keys,
+# and enum values live in companion files (relationships.md, gotchas.md,
+# query_patterns.yaml).
+
+database: einvoices_gcc
+engine: postgresql
+tables:
+  Sf_customer_data:
+    columns:
+      customer_id: text
+      enterprise_name: text
+      asset_id: text
+      module__c: text
+      onboarding_status: text
+      po_from: "timestamp without time zone"
+      po_to: "timestamp without time zone"
+      updated_classification: text
+      billing_type__c: text
+      gcc_flag: text
+      category: text
+  accounts:
+    columns:
+      "Accounts Account Status": text
+      "Accounts Angaza ID": text
+      "Accounts Area": text
+      "Accounts Country": text
+      "Accounts Date of Registration Date": text
+      "Accounts Minimum Payment Amount": "double precision"
+      "Accounts Minimum Payment Amount USD": "double precision"
+      "Accounts Price per Day": "double precision"
+      "Accounts Price per Day USD": "double precision"
+      "Accounts Product Name": text
+      "Accounts Region": text
+      "Accounts Registering User Angaza ID": text
+      "Accounts Unlock Price": text
+      "Accounts Unlock Price USD": bigint
+      "Accounts Upfront Days Included": bigint
+      "Accounts Upfront Price": text
+      "Accounts Upfront Price USD": "double precision"
+      "Accounts Zone": text
+  api_details:
+    columns:
+      _id: text
+      userId: text
+      uniqueIdentifier: text
+      status: bigint
+      timeTaken: bigint
+      requestQueryString: text
+      nonNicTimeTaken: bigint
+      nonNicPlatformTimeTaken: bigint
+      requestBodySize: bigint
+      count: bigint
+      authenticationMethod: text
+      error: text
+      caller: text
+      requestMethod: text
+      requestPath: text
+      apiPriority: text
+      requestBody: text
+      requestContentLength: bigint
+      requestContentType: text
+      responseContentType: text
+      requestUserAgent: text
+      requestId: text
+      pan: text
+      gstin: text
+      branch: text
+      ownerId: text
+      spanId: text
+      isOldEwbCall: text
+      analyticsEventName: text
+      userSessionId: text
+      ctError: boolean
+      created_at: "timestamp with time zone"
+      qrCodeStatus: text
+      documentType: text
+      invoiceType: text
+      warningMessage: text
+      message: text
+      invoiceStatus: text
+      uniqueId: text
+      invoiceNumber: text
+      issueDate: text
+      documentDate: text
+      deviceType: text
+      DeviceId: text
+      DeviceStatus: text
+      industry: text
+      deviceId: text
+      isPhase1: boolean
+      signingDeviceId: text
+      numberOfLineItems: bigint
+      workspaceId: "character varying"
+      nodeType: "character varying"
+      workSpaceId: "double precision"
+  api_details_v2:
+    columns:
+      branch: text
+      caller: text
+      error: text
+      industry: text
+      message: text
+      requestBody: text
+      requestPath: text
+      requestQueryString: text
+      requestUserAgent: text
+      warningMessage: text
+      status: bigint
+      timeTaken: bigint
+      nonNicTimeTaken: bigint
+      requestBodySize: bigint
+      count: bigint
+      requestContentLength: bigint
+      ctError: boolean
+      created_at: "timestamp with time zone"
+      isPhase1: boolean
+      numberOfLineItems: bigint
+      nonNicPlatformTimeTaken: bigint
+      _id: "character varying"
+      userId: "character varying"
+      uniqueIdentifier: "character varying"
+      authenticationMethod: "character varying"
+      requestMethod: "character varying"
+      apiPriority: "character varying"
+      requestContentType: "character varying"
+      responseContentType: "character varying"
+      requestId: "character varying"
+      pan: "character varying"
+      gstin: "character varying"
+      ownerId: "character varying"
+      spanId: "character varying"
+      isOldEwbCall: "character varying"
+      analyticsEventName: "character varying"
+      userSessionId: "character varying"
+      qrCodeStatus: "character varying"
+      documentType: "character varying"
+      invoiceType: "character varying"
+      invoiceStatus: "character varying"
+      uniqueId: "character varying"
+      invoiceNumber: "character varying"
+      issueDate: "character varying"
+      documentDate: "character varying"
+      deviceType: "character varying"
+      DeviceId: "character varying"
+      DeviceStatus: "character varying"
+      deviceId: "character varying"
+      signingDeviceId: "character varying"
+  branches:
+    columns:
+      id: text
+      external_id: text
+      name: text
+      address: text
+      dispatch_addresses: text
+      image: text
+      upi_id: text
+      gstin_id: text
+      is_deleted: text
+      created_at: text
+      updated_at: text
+      created_by: text
+      updated_by: text
+      metadata: text
+      legal_name: text
+      trade_name: text
+      bank_account_details: text
+      signature_image: text
+      products_associated: text
+      version: text
+      region: text
+      node_type: text
+      user_ip_address: text
+  contacts:
+    columns:
+      id: bigint
+      external_id: text
+      email: text
+      phone_number: text
+      whatsapp_number: text
+      alternate_phone_number: text
+      purpose: text
+      metadata: text
+      organisation_id: text
+      gstin_id: text
+      pan_id: text
+      branch_id: text
+      party_id: bigint
+      is_deleted: text
+      created_at: "timestamp without time zone"
+      updated_at: "timestamp without time zone"
+      created_by: text
+      updated_by: text
+      name: text
+  customer_data:
+    columns:
+      index: bigint
+      User_id: text
+      user_email: text
+      Account_name: text
+  einvoice_gen_metrics:
+    columns:
+      success: text
+      translated: text
+      count: text
+      caller: text
+      issuccesscall: text
+      status: text
+      id: text
+      requestid: text
+      spanid: text
+      taxpayerparentnumber: text
+      taxpayernumber: text
+      branch: text
+      requestorgid: text
+      requestuseragent: text
+      documentnumber: text
+      uniqueidentifier: text
+      _id: text
+      created_at: text
+      userid: text
+      authenticationmethod: text
+  einvoice_gen_metrics_2021_12:
+    columns:
+      success: text
+      translated: text
+      count: text
+      caller: text
+      issuccesscall: text
+      status: text
+      id: text
+      requestid: text
+      spanid: text
+      taxpayerparentnumber: text
+      taxpayernumber: text
+      branch: text
+      requestorgid: text
+      requestuseragent: text
+      documentnumber: text
+      uniqueidentifier: text
+      _id: text
+      created_at: text
+      userid: text
+      authenticationmethod: text
+  einvoice_gen_metrics_2022_01:
+    columns:
+      success: text
+      translated: text
+      count: text
+      caller: text
+      issuccesscall: text
+      status: text
+      id: text
+      requestid: text
+      spanid: text
+      taxpayerparentnumber: text
+      taxpayernumber: text
+      branch: text
+      requestorgid: text
+      requestuseragent: text
+      documentnumber: text
+      uniqueidentifier: text
+      _id: text
+      created_at: text
+      userid: text
+      authenticationmethod: text
+  einvoice_gen_metrics_2022_02:
+    columns:
+      success: text
+      translated: text
+      count: text
+      caller: text
+      issuccesscall: text
+      status: text
+      id: text
+      requestid: text
+      spanid: text
+      taxpayerparentnumber: text
+      taxpayernumber: text
+      branch: text
+      requestorgid: text
+      requestuseragent: text
+      documentnumber: text
+      uniqueidentifier: text
+      _id: text
+      created_at: text
+      userid: text
+      authenticationmethod: text
+  einvoice_gen_metrics_2022_03:
+    columns:
+      success: text
+      translated: text
+      count: text
+      caller: text
+      issuccesscall: text
+      status: text
+      id: text
+      requestid: text
+      spanid: text
+      taxpayerparentnumber: text
+      taxpayernumber: text
+      branch: text
+      requestorgid: text
+      requestuseragent: text
+      documentnumber: text
+      uniqueidentifier: text
+      _id: text
+      created_at: text
+      userid: text
+      authenticationmethod: text
+  einvoice_gen_metrics_2022_04:
+    columns:
+      success: text
+      translated: text
+      count: text
+      caller: text
+      issuccesscall: text
+      status: text
+      id: text
+      requestid: text
+      spanid: text
+      taxpayerparentnumber: text
+      taxpayernumber: text
+      branch: text
+      requestorgid: text
+      requestuseragent: text
+      documentnumber: text
+      uniqueidentifier: text
+      _id: text
+      created_at: text
+      userid: text
+      authenticationmethod: text
+  einvoice_gen_metrics_2022_05:
+    columns:
+      success: text
+      translated: text
+      count: text
+      caller: text
+      issuccesscall: text
+      status: text
+      id: text
+      requestid: text
+      spanid: text
+      taxpayerparentnumber: text
+      taxpayernumber: text
+      branch: text
+      requestorgid: text
+      requestuseragent: text
+      documentnumber: text
+      uniqueidentifier: text
+      _id: text
+      created_at: text
+      userid: text
+      authenticationmethod: text
+  einvoice_gen_metrics_2022_06:
+    columns:
+      success: text
+      translated: text
+      count: text
+      caller: text
+      issuccesscall: text
+      status: text
+      id: text
+      requestid: text
+      spanid: text
+      taxpayerparentnumber: text
+      taxpayernumber: text
+      branch: text
+      requestorgid: text
+      requestuseragent: text
+      documentnumber: text
+      uniqueidentifier: text
+      _id: text
+      created_at: text
+      userid: text
+      authenticationmethod: text
+  einvoice_gen_metrics_2022_07:
+    columns:
+      success: text
+      translated: text
+      count: text
+      caller: text
+      issuccesscall: text
+      status: text
+      id: text
+      requestid: text
+      spanid: text
+      taxpayerparentnumber: text
+      taxpayernumber: text
+      branch: text
+      requestorgid: text
+      requestuseragent: text
+      documentnumber: text
+      uniqueidentifier: text
+      _id: text
+      created_at: text
+      userid: text
+      authenticationmethod: text
+  einvoice_gen_metrics_2022_08:
+    columns:
+      success: text
+      translated: text
+      count: text
+      caller: text
+      issuccesscall: text
+      status: text
+      id: text
+      requestid: text
+      spanid: text
+      taxpayerparentnumber: text
+      taxpayernumber: text
+      branch: text
+      requestorgid: text
+      requestuseragent: text
+      documentnumber: text
+      uniqueidentifier: text
+      _id: text
+      created_at: text
+      userid: text
+      authenticationmethod: text
+  einvoice_gen_metrics_def:
+    columns:
+      success: text
+      translated: text
+      count: text
+      caller: text
+      issuccesscall: text
+      status: text
+      id: text
+      requestid: text
+      spanid: text
+      taxpayerparentnumber: text
+      taxpayernumber: text
+      branch: text
+      requestorgid: text
+      requestuseragent: text
+      documentnumber: text
+      uniqueidentifier: text
+      _id: text
+      created_at: text
+      userid: text
+      authenticationmethod: text
+  einvoice_generation_metrics:
+    columns:
+      _id: text
+      userId: text
+      authenticationMethod: text
+      count: bigint
+      caller: text
+      isSuccessCall: text
+      status: text
+      id: text
+      requestId: text
+      spanId: text
+      taxpayerParentNumber: text
+      taxpayerNumber: text
+      branch: text
+      requestOrgId: text
+      requestUserAgent: text
+      documentNumber: text
+      uniqueIdentifier: text
+      success: boolean
+      translated: boolean
+      created_at: text
+      phase: text
+      generationSuccess: text
+      zatcaResponseTime: bigint
+      methodOfGeneration: text
+      numberOfLineItems: text
+      ctResponseTime: bigint
+      documentType: text
+      errorSource: text
+      documentDate: text
+      tin: text
+      vat: text
+  einvoice_generation_metrics_v1:
+    columns:
+      _id: text
+      userId: text
+      authenticationMethod: text
+      count: bigint
+      caller: text
+      isSuccessCall: text
+      status: text
+      id: text
+      requestId: text
+      spanId: text
+      taxpayerParentNumber: text
+      taxpayerNumber: text
+      branch: text
+      requestOrgId: text
+      requestUserAgent: text
+      documentNumber: text
+      uniqueIdentifier: text
+      success: boolean
+      translated: boolean
+      created_at: text
+  einvoices_gcc_data_v3:
+    columns:
+      _id: text
+      uniqueIdentifier: text
+      taxpayerParentOrgId: text
+      taxpayerOrgId: text
+      taxpayerIdNumber: text
+      isDeleted: boolean
+      status: text
+      qrResponse: text
+      eInvoiceDetails: text
+      createdAt: "timestamp without time zone"
+      updatedAt: "timestamp without time zone"
+      lastUpdatedBy: text
+      _class: text
+      customFields: text
+  gcc_client_list:
+    columns:
+      id:
+        type: integer
+        default: 'nextval(''gcc_client_list_id_seq''::regclass)'
+      alias: text
+      orgname: text
+      vat: "character varying"
+      tin: "character varying"
+      purchase_docs_b2b: text
+      purchase_docs_b2c: text
+      activation_date: date
+  gcc_qr_code:
+    columns:
+      _id: text
+      id: text
+      ownerId: text
+      isSuccess: boolean
+      status: bigint
+      timeTaken: bigint
+      errorCode: text
+      errorMessage: text
+      requestUserAgent: text
+      requestId: text
+      userId: text
+      mode: text
+      authenticationMethod: text
+      caller: text
+      sellerName: text
+      vatNumber: text
+      timeStamp: text
+      vatTotal: text
+      invTotal: text
+      created_at: text
+  gcc_qr_code_v1:
+    columns:
+      _id: text
+      id: text
+      ownerId: text
+      isSuccess: boolean
+      status: bigint
+      timeTaken: bigint
+      errorCode: text
+      errorMessage: text
+      requestUserAgent: text
+      requestId: text
+      userId: text
+      mode: text
+      authenticationMethod: text
+      caller: text
+      sellerName: text
+      vatNumber: text
+      timeStamp: text
+      vatTotal: text
+      invTotal: text
+      created_at: text
+  gstins:
+    columns:
+      id: text
+      external_id: text
+      name: text
+      gstin: text
+      address: text
+      dispatch_addresses: text
+      image: text
+      upi_id: text
+      pan_id: text
+      is_deleted: text
+      created_at: text
+      updated_at: text
+      created_by: text
+      updated_by: text
+      metadata: text
+      legal_name: text
+      trade_name: text
+      bank_account_details: text
+      signature_image: text
+      nature_of_business: text
+      products_associated: text
+      version: text
+      region: text
+      node_type: text
+      tax_payer_identification_number: text
+      corporate_identification_number: text
+      gstin_description: text
+      gstin_website: text
+      is_vendor: text
+      gstin_type: text
+      division_name: text
+      user_ip_address: text
+  migration_item_tracker:
+    columns:
+      _id:
+        type: integer
+        default: 'nextval(''migration_item_tracker__id_seq''::regclass)'
+      dag_task: "character varying"
+      last_successful_run: "timestamp without time zone"
+  old_api_details:
+    columns:
+      _id: text
+      userId: text
+      status: bigint
+      timeTaken: bigint
+      requestQueryString: text
+      nonNicTimeTaken: bigint
+      nonNicPlatformTimeTaken: bigint
+      requestBodySize: bigint
+      count: bigint
+      authenticationMethod: text
+      error: text
+      caller: text
+      requestMethod: text
+      requestPath: text
+      apiPriority: text
+      requestBody: text
+      requestContentLength: bigint
+      requestContentType: text
+      responseContentType: text
+      requestUserAgent: text
+      requestId: text
+      pan: text
+      gstin: text
+      branch: text
+      ownerId: text
+      spanId: text
+      ctError: boolean
+      created_at: text
+      isOldEwbCall: text
+      uniqueIdentifier: text
+      analyticsEventName: text
+      userSessionId: text
+      documentType: text
+      uniqueId: text
+      deviceType: text
+      qrCodeStatus: text
+      invoiceType: text
+      warningMessage: text
+      message: "double precision"
+      invoiceStatus: text
+      invoiceNumber: text
+      issueDate: text
+      documentDate: text
+      DeviceId: text
+      DeviceStatus: text
+      industry: text
+  old_validation_errors:
+    columns:
+      _id: text
+      id: text
+      requestId: text
+      userId: text
+      pan: text
+      gstin: text
+      branch: text
+      ownerId: text
+      requestUserAgent: text
+      authenticationMethod: text
+      caller: text
+      uniqueIdentifier: text
+      errorMessage: text
+      errorCode: text
+      validationType: text
+      created_at: text
+      spanId: text
+      errorSource: text
+      analyticsEventName: text
+  organisations:
+    columns:
+      id: text
+      external_id: text
+      name: text
+      address: text
+      image: text
+      is_deleted: text
+      created_at: text
+      updated_at: text
+      created_by: text
+      updated_by: text
+      metadata: text
+      legal_name: text
+      trade_name: text
+      signature_image: text
+      billing_gstin: text
+      billing_pan: text
+      products_associated: text
+      version: text
+      region: text
+      node_type: text
+      sf_account_id: text
+      workspace_id: text
+      user_ip_address: text
+  pans:
+    columns:
+      id: text
+      external_id: text
+      name: text
+      pan: text
+      address: text
+      dispatch_addresses: text
+      image: text
+      upi_id: text
+      organisation_id: text
+      is_deleted: text
+      created_at: text
+      updated_at: text
+      created_by: text
+      updated_by: text
+      metadata: text
+      legal_name: text
+      trade_name: text
+      bank_account_details: text
+      signature_image: text
+      products_associated: text
+      version: text
+      region: text
+      node_type: text
+      is_vendor: text
+      user_ip_address: text
+  parties:
+    columns:
+      id: bigint
+      external_id: text
+      org_name: text
+      party_gstin: text
+      type: text
+      image: text
+      place_of_supply: bigint
+      business_address: text
+      shipping_addresses: text
+      gstin_id: "double precision"
+      branch_id: text
+      is_deleted: text
+      created_at: "timestamp without time zone"
+      updated_at: "timestamp without time zone"
+      created_by: text
+      updated_by: text
+      legal_name: text
+      trade_name: text
+      organisation_id: text
+      pan_id: "double precision"
+      nature_of_business: text
+  payment:
+    columns:
+      "Payments Payment Angaza ID": text
+      "Payments Account Angaza ID": text
+      "Payments Amount": text
+      "Payments Effective Utc Date": text
+      "Payments Is Agent Who Pay for Customers (Yes / No)": text
+      "Payments Purchased Days": "double precision"
+      "Payments Purchased Hours": text
+      "Payments Responsible User": text
+  send_communication:
+    columns:
+      _id: text
+      userId: text
+      pan: text
+      gstin: text
+      branch: text
+      ownerId: text
+      caller: text
+      authenticationMethod: text
+      requestUserAgent: text
+      emailServiceResponseCode: bigint
+      emailServiceRequestId: text
+      recipientAddresses: text
+      ccAddresses: text
+      bccAddresses: text
+      customerGstin: text
+      numberOfDocuments: bigint
+      responseTime: bigint
+      requestId: text
+      success: boolean
+      created_at: text
+  table:
+    columns:
+      _id: text
+      id: text
+      requestId: text
+      spanId: text
+      userId: text
+      pan: text
+      gstin: text
+      branch: text
+      ownerId: text
+      requestUserAgent: text
+      authenticationMethod: text
+      caller: text
+      uniqueIdentifier: text
+      errorMessage: text
+      errorCode: text
+      errorSource: text
+      validationType: text
+      analyticsEventName: text
+      created_at: "timestamp with time zone"
+  user_workspace_mapping:
+    columns:
+      id: text
+      email: text
+      user_id: text
+      workspace_id: text
+      first_name: text
+      last_name: text
+      is_invitation_pending: text
+      invitation_id: text
+      created_at: text
+      updated_at: text
+      is_default_workspace: text
+      user_type: text
+      expire_at: text
+      user_ip_address: text
+      created_by: text
+      deleted_by: text
+      source: text
+  validation_error_v1:
+    columns:
+      _id: text
+      id: text
+      requestId: text
+      userId: text
+      pan: text
+      gstin: text
+      branch: text
+      ownerId: text
+      requestUserAgent: text
+      authenticationMethod: text
+      caller: text
+      uniqueIdentifier: text
+      errorMessage: text
+      errorCode: text
+      validationType: text
+      created_at: text
+  validation_errors:
+    columns:
+      _id: text
+      id: text
+      requestId: text
+      spanId: text
+      userId: text
+      pan: text
+      gstin: text
+      branch: text
+      ownerId: text
+      requestUserAgent: text
+      authenticationMethod: text
+      caller: text
+      uniqueIdentifier: text
+      errorMessage: text
+      errorCode: text
+      errorSource: text
+      validationType: text
+      analyticsEventName: text
+      created_at: "timestamp with time zone"
+  webappeventtracking:
+    columns:
+      _id: text
+      createtimestamp: text
+      referrer: text
+      userAgent: text
+      ip: text
+      sessionid: text
+      anonid: text
+      appVersion: text
+      appOrigin: text
+      page_title: text
+      page_url: text
+      page_path: text
+      page_hash: text
+      page_search: text
+      page_width: text
+      page_height: text
+      user_id: text
+      user_session_id: text
+      app_origin: text
+      app_version: text
+      ab_test: text
+      platform: text
+      category: text
+      action: text
+      label: text
+      value: "double precision"
+      interaction: boolean
+      utm_campaign: text
+      utm_medium: text
+      utm_source: text
+      utm_term: text
+      utm_content: text
+      custom_dimension_1: text
+      custom_dimension_2: text
+      custom_dimension_3: text
+      custom_dimension_4: text
+      request_id: text
+      email: text
+      userid: text
+      panId: text
+      gstinId: text
+      branchId: text
+  workspaces:
+    columns:
+      id: text
+      external_id: text
+      name: text
+      address: text
+      image: text
+      is_deleted: text
+      created_at: text
+      updated_at: text
+      created_by: text
+      updated_by: text
+      type: text
+      billing_details: text
+      parent_workspace_id: text
+      sf_account_id: text
+      metadata: text
+      security_settings: text
+      user_ip_address: text
