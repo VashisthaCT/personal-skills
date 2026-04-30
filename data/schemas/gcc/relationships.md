@@ -64,30 +64,48 @@ Two parallel tables, one per flow:
 
 Stores **one row per invoice** (not per attempt). Mongo-shape, mirrored to CH.
 
-Key columns:
+Key columns — **note column-name inconsistency** between online and offline (see gotchas §15):
 
-| Column | Meaning |
-|---|---|
-| `uniqueIdentifier` | Invoice key (camelCase, Mongo origin — even in CH) |
-| `invoice_status` | Terminal state. Enum: `REPORTED` (B2C cleared by regulator), `CLEARED` (B2B cleared), `PENDING` (in flight), `FAILED` (regulator rejected), `DISCARDED` (we discarded), `NOT_SUBMITTED`, `NOT_REPORTED`, `NOT_CLEARED` |
-| `taxpayerOrgId` | Workspace UUID |
-| `taxpayerParentOrgId` | Parent org UUID |
-| `created_at`, `updatedAt` | UTC |
+| Concept | `einvoice_gcc` (online) | `eInvoice_gcc_metadata` (offline) |
+|---|---|---|
+| Invoice key | `unique_identifier` (snake) | `uniqueIdentifier` (camel) |
+| Workspace UUID | `taxpayer_org_id` | `taxpayerOrgId` |
+| Parent org UUID | `taxpayer_parent_org_id` | (not present at top level) |
+| Terminal-state column | `status` | `status` + `einvoiceStatus` (two columns — verify which holds regulator state with `SELECT DISTINCT status, einvoiceStatus FROM eInvoice_gcc_metadata LIMIT 100`) |
+| Created / updated | `created_at` (snake) | `createdAt` / `updatedAt` (camel) |
 
-For "what made it into our DB during the window?" — query these. **Always run both** and union. Picking just online OR offline silently misses half the impact in offline-heavy markets.
+Terminal-state enum (from KSA RCA memory; refresh with `SELECT DISTINCT status FROM einvoice_gcc`): `REPORTED` (B2C cleared by regulator), `CLEARED` (B2B cleared), `PENDING` (in flight), `FAILED` (regulator rejected), `DISCARDED` (we discarded), `NOT_SUBMITTED`, `NOT_REPORTED`, `NOT_CLEARED`.
+
+There is also a **dedicated state-change table for offline**: `eInvoices_gcc_metadata_status` (CH) — has `uniqueIdentifier`, `status`, `einvoiceStatus`, `createdAt`, `updatedAt`. Likely one row per status transition (vs. eInvoice_gcc_metadata which is one row per invoice with current state). Worth checking when needing offline state history.
+
+For "what made it into our DB during the window?" — query both `einvoice_gcc` (online) and `eInvoice_gcc_metadata` (offline). **Always run both** and union with explicit aliasing. Picking just one silently misses half the impact in offline-heavy markets.
 
 ---
 
-## Layer 3 — Audit trails
+## Layer 3 — Audit trails (request-level, NOT terminal-state)
 
 | Table | What it logs |
 |---|---|
-| `eInvoiceAuditTrail` | Each `invoice_status` transition (online + offline both write here) |
-| `einvoiceexternalaudittrail` | Outbound regulator calls (ZATCA, JoFotara, etc.) — request/response, timing |
+| `eInvoiceAuditTrail` | Per-request audit of inbound calls to our service. Full request + response payloads stored as String columns. |
+| `einvoiceexternalaudittrail` | Per-outbound-call audit of OUR calls to external regulators (ZATCA, JoFotara, etc.). Full request_body + response_body as String columns. |
 
-`eInvoiceAuditTrail` is the **terminal-state truth source**. An invoice has multiple rows; each row is a state-change event with `created_at`. To classify an invoice's final state for a window, take `argMax(invoice_status, created_at)` grouped by `uniqueIdentifier`.
+Key columns (both tables):
 
-`einvoiceexternalaudittrail` is the answer to "did this invoice reach the regulator?" If a row exists with success status, regulator received it.
+| Column | Meaning |
+|---|---|
+| `traceId`, `spanId` | Correlate to `api_details_v2.request_id` / `span_id` |
+| `request` / `request_body`, `response` / `response_body` | Full payload, **stored as String** — use `JSONExtractString(...)` or `extractAllGroups(...)` to read structured fields |
+| `service`, `operation`, `entity`, `auditType` | Classification (`service` enum values not yet pinned — `SELECT DISTINCT service` to refresh) |
+| `gstinOrgId`, `panOrgId`, `branchOrgId` (eInvoiceAuditTrail) | Workspace scoping at the org level |
+| `createdAt`, `updatedAt` | UTC |
+
+**These are NOT terminal-state truth sources.** Neither has a normalized `status` or `unique_identifier` column. To get an invoice's terminal state, query `einvoice_gcc.status` (online) or `eInvoice_gcc_metadata.status` (offline) using the invoice key.
+
+Use audit trails when you need:
+- Full request/response payload for a specific `traceId` (debugging "what did the customer actually send?")
+- Regulator-side response details — parse `einvoiceexternalaudittrail.response_body` text
+- Existence check — "did our service call ZATCA at all in this window?" — `COUNT(*) FROM einvoiceexternalaudittrail WHERE service = 'zatca' AND createdAt IN [window]`
+- Latency analysis — `(updatedAt - createdAt)` for outbound call durations
 
 ---
 
@@ -101,7 +119,7 @@ For "what made it into our DB during the window?" — query these. **Always run 
 
 Key columns: `errorCode`, `errorMessage`, `errorSource`, `validationType`, `uniqueIdentifier`, `gstin`, `caller`.
 
-These are **our own validation failures** (pre-regulator), not regulator-side rejections. For regulator rejections, look at `eInvoiceAuditTrail.invoice_status = 'FAILED'` joined with the audit-trail's error fields.
+These are **our own validation failures** (pre-regulator), not regulator-side rejections. For regulator-side rejections, JOIN to `einvoice_gcc` / `eInvoice_gcc_metadata` and filter on `status = 'FAILED'`, then pull the failure response from `einvoiceexternalaudittrail.response_body` via the matching `traceId`.
 
 ---
 
@@ -125,11 +143,13 @@ For going from gstin/UUID/pan to a human workspace name:
 
 | Question | JOIN logic |
 |---|---|
-| "What terminal state did each 500 response end in?" | `api_details_v2` LEFT JOIN `(SELECT uniqueIdentifier, argMax(invoice_status, created_at) FROM eInvoiceAuditTrail WHERE created_at IN [window_start, window_end+10min] GROUP BY uniqueIdentifier)` ON `unique_identifier` |
-| "Online vs offline split for an invoice list" | UNION ALL of `einvoice_gcc` + `eInvoice_gcc_metadata` on `uniqueIdentifier` |
-| "Did this invoice reach the regulator?" | invoice record LEFT JOIN `einvoiceexternalaudittrail` on `uniqueIdentifier` — non-null success row = reached |
-| "What workspace does this gstin map to?" | CH `api_details_v2` ⨝ PG `gstins` — cross-engine, requires CSV export from CH then PG join, or use `gcc_client_list` (CH-side gstin lookup) if it has the gstin you need |
-| "Customer retries during incident" | `api_details_v2` self-join on `unique_identifier` where one side has status='500' and other has status='400' with message LIKE 'already approved' |
+| "What terminal state did each affected invoice end in?" | Online: `api_details_v2` LEFT JOIN `einvoice_gcc` USING `unique_identifier` — read `inv.status`. Offline (cross-naming): `api_details_v2` LEFT JOIN `eInvoice_gcc_metadata` ON `api.unique_identifier = meta.uniqueIdentifier` — read `meta.status` (and/or `meta.einvoiceStatus` — verify which one holds regulator state). |
+| "Online vs offline split for an invoice list" | UNION ALL with explicit column aliasing — see gotchas §15. `unique_identifier` (online) and `uniqueIdentifier` (offline) must be aliased to a common name |
+| "Did our service even call ZATCA in this window?" | `SELECT count() FROM einvoiceexternalaudittrail WHERE service = 'zatca' AND createdAt IN [window]` — non-zero = service was reachable |
+| "What was the full request/response for a failed call?" | `api_details_v2 api ⨝ eInvoiceAuditTrail audit ON api.request_id = audit.traceId` — then JSONExtract from `audit.request` / `audit.response` |
+| "What was the regulator's exact error response?" | `api_details_v2 api ⨝ einvoiceexternalaudittrail ext ON api.request_id = ext.traceId` (for traceId mapping; if not 1:1, use `span_id`/`spanId`) — parse `ext.response_body` |
+| "What workspace does this gstin map to?" | CH `api_details_v2 ⨝ PG gstins` — cross-engine, requires CSV export or use `gcc_client_list` (CH-side gstin lookup) if loaded there |
+| "Customer retries during incident" | `api_details_v2` GROUP BY `unique_identifier` HAVING `count() > 1` — inspect `groupArray(status)` for the retry sequence |
 
 When composing for a new incident, **identify the question first**, then map to one of the above layers, then compose the SQL using the column names from `tables/*.yaml`. If the question doesn't fit a recipe, write SQL fresh — relationships in this doc are guidance, not a closed list.
 

@@ -83,9 +83,15 @@ Metabase UI caps results at 2000 rows by default. Always click **"Download full 
 
 `api_details_v2.created_at` may be `DateTime` (second precision) or `DateTime64(3)` (millisecond precision) depending on table version. Use `toUnixTimestamp()` for consistent epoch math; don't compare DateTime to DateTime64 directly without casting.
 
-## 13. Audit trail JOIN — the right one
+## 13. `eInvoiceAuditTrail` is NOT a terminal-state source
 
-Q11 (definitive bucket distribution) JOINs `api_details_v2` on `trace_id`/`requestId` to `eInvoiceAuditTrail.invoice_status`. Multiple audit-trail rows per invoice — take the **latest** by `created_at`, not the first. Otherwise you count transient PENDING states as terminal.
+It's tempting to think of `eInvoiceAuditTrail` as "the table that records every invoice_status transition". It's not. The table has columns `traceId`, `spanId`, `request`, `response`, `auditType`, `operation`, `entity`, `gstinOrgId`, `panOrgId`, `branchOrgId` — **no `invoice_status`, no `unique_identifier`** at the column level. The invoice key and status are inside the `request`/`response` JSON payloads (String columns).
+
+For terminal invoice state, JOIN through `einvoice_gcc.status` (online) or `eInvoice_gcc_metadata.status` (offline) using `unique_identifier` / `uniqueIdentifier`. See `relationships.md` Common JOIN recipes.
+
+For invoice-level state-change history (offline only): `eInvoices_gcc_metadata_status` exists as a dedicated state-transition table — has `uniqueIdentifier`, `status`, `einvoiceStatus`, `createdAt`, `updatedAt`. Use `argMax(status, updatedAt) GROUP BY uniqueIdentifier` to get the latest state per invoice.
+
+Use `eInvoiceAuditTrail` when you actually need the **full request/response payload** for a `traceId` — debugging what the customer sent, what we returned, what the regulator said.
 
 ## 14. `analyticsEventName` enum values
 
@@ -97,3 +103,29 @@ Maps customer-side endpoint to action. From KSA RCA Q4b, the values that appear:
 - `base64_offline_async_response_final` — `/v2/einvoices/generate-with-base64-offline/async`
 
 (Not exhaustive. Run `SELECT DISTINCT "analyticsEventName" FROM api_details_v2 LIMIT 100` to refresh.)
+
+## 15. Within-ClickHouse naming inconsistency (online snake_case vs offline camelCase)
+
+Even within the same ClickHouse database (`einvoicing_gcc_analytics`), Mongo-mirrored tables don't share a naming convention. The pipelines that mirrored each Mongo collection preserved different cases:
+
+| Concept | `einvoice_gcc` (online) | `eInvoice_gcc_metadata` (offline) |
+|---|---|---|
+| Invoice key | `unique_identifier` | `uniqueIdentifier` |
+| Workspace UUID | `taxpayer_org_id` | `taxpayerOrgId` |
+| Created / updated | `created_at` (snake) | `createdAt` / `updatedAt` (camel) |
+
+**Implications for queries:**
+
+A union across online + offline needs explicit column aliasing:
+```sql
+SELECT unique_identifier AS inv_id, status FROM einvoice_gcc WHERE created_at >= ...
+UNION ALL
+SELECT uniqueIdentifier  AS inv_id, status FROM eInvoice_gcc_metadata WHERE createdAt >= ...
+```
+
+A JOIN from `api_details_v2.unique_identifier` to the offline table needs cross-naming:
+```sql
+... LEFT JOIN eInvoice_gcc_metadata meta ON api.unique_identifier = meta.uniqueIdentifier
+```
+
+When unsure, `DESCRIBE TABLE einvoicing_gcc_analytics.<name>` before writing the JOIN. The column YAML at `tables/einvoicing_gcc_analytics.yaml` is the canonical reference.
