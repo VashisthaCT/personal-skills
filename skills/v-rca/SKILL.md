@@ -20,7 +20,13 @@ Compose a slug: `<YYYY-MM-DD>-<short-kebab>` (e.g. `2025-11-18-ewb-irn-nic-redis
 Read in parallel:
 1. **Template:** `~/dev/personal-skills/prompts/rca_template.md` — this is the section structure to fill.
 2. **Active projects:** `~/dev/personal-skills/data/active_projects.yaml` — find any project whose keywords match the incident (e.g. NIC switcher → `india`/IRP; FTP → IND FTP migration; Tabby → UAE).
-3. **Country runbook:** if the incident text mentions a country code or known country name (jordan / india / uae / ksa / malaysia / belgium / france / poland) or a region (peppol / gcc / mea), read `~/dev/personal-skills/runbooks/countries/<cc>/runbook.md` (or `runbooks/regions/<id>/runbook.md`). Use it for: prior RCAs in this area, error code references, escalation contacts.
+3. **Country runbook (full set):** if the incident text mentions a country code or known country name (jordan / india / uae / ksa / malaysia / belgium / france / poland) or a region (peppol / gcc / mea), read all available files from `~/dev/personal-skills/runbooks/countries/<cc>/` (or `runbooks/regions/<id>/`):
+   - `runbook.md` — prior RCAs in this area, error code references, escalation contacts (always)
+   - `code_map.md` — known code paths (helps locate where the bug lives — e.g. "the routing service for JO is at `clear-routing/clear-jofotara/.../JoRoutingServiceImpl.java`")
+   - `api_contract.md` — endpoint/header/error-code spec (if regulator API call failed)
+   - `credentials.md` — auth model + failure modes (if auth-related)
+   - `ubl_structure.md` — schema/validation rules (if mapping/validation failure)
+   Skip files that don't exist (stub countries). Use the loaded set for: prior-RCA lookup, error-code translation, escalation contacts, root-cause hypotheses grounded in code paths, and "have we seen this before?" cross-checks.
 4. **People:** `~/dev/personal-skills/data/people.yaml` — for Slack IDs / role attribution.
 5. **Metabase schema (GCC scope only, v1):** if the incident touches `ksa` / `uae` / `bahrain` / `kuwait` / `oman` / `qatar` or region `gcc` / `mea`, read all four files:
    - `~/dev/personal-skills/data/schemas/gcc/relationships.md` — what each table holds, layer-by-layer semantics, JOIN recipes, identifier mismatches. **Start here** — this maps any incident question to the right tables.

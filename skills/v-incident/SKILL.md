@@ -178,6 +178,29 @@ endpoints, and bucketing rules. Paste the SQL you actually run + its output belo
 
 If `runbook_pointer` doesn't match GCC scope (e.g. India, Belgium, France) or is `null`, skip this file. `/v-rca` will look for it later and will skip-with-warning if absent.
 
+## Step 3.5 — Enrich rca.md with runbook gotchas (if country detected in Step 2)
+
+If `runbook_pointer` is non-null, read the *adjacent* runbook files in the same directory (not just `runbook.md`):
+
+- `code_map.md` — known code paths
+- `ubl_structure.md` — schema gotchas (if invoicing-related)
+- `api_contract.md` — endpoint spec (if regulator API call involved)
+- `credentials.md` — auth model
+
+Skip files that don't exist (stub countries). For each loaded file, extract the 2-4 most-relevant lines for this incident's symptoms and append them as a new section in `rca.md` (right after "Sections to fill"):
+
+```
+## Known gotchas from runbook (auto-loaded)
+> Source: `<runbook_pointer dir>/`
+- [Gotcha 1 from runbook — paste the line; cite filename]
+- [Gotcha 2]
+- ...
+```
+
+Don't fabricate. If the runbook files are sparse/stub, write: `(no gotchas in runbook yet — fill <cc>/runbook.md post-incident via /v-runbook).`
+
+If `runbook_pointer` is `null`, skip this step entirely.
+
 ## Step 4 — Self-DM draft
 
 Compose a single Slack-formatted message to self-DM `D088362AS65` via `slack_send_message_draft`:

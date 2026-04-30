@@ -39,6 +39,37 @@ For each file in `files`:
 2. Else `gh api repos/<owner>/<repo>/contents/<file_path>?ref=<head_sha>`.
 3. Read enough surrounding code to understand context (entire class/function for Java, entire module for Python).
 
+### Step 2.5 — Country detection + runbook auto-load
+Scan the PR's modified file paths + title + body for country signals:
+
+| Path / keyword | Detected country |
+|---|---|
+| `einvoice-jo/`, `clear-jofotara/`, `jordan` | JO |
+| `einvoice-ae/`, `clear-ae-fta/`, `uae`, `tabby` | AE |
+| `einvoice-my/`, `clear-my-lhdn/`, `malaysia` | MY |
+| `einvoice-be/`, `belgium` | BE |
+| `einvoice-pl/`, `poland`, `ksef` | PL |
+| `e-invoicing-be/` (IND), `clr-irp-be/`, `nic`, `ewb`, `irn`, `gst` | IN |
+| `einvoice-ksa`, `zatca`, `ksa`, `saudi` | SA |
+| `france`, `ppf`, `cdar` | FR |
+| `clear-peppol-ap/` (when not country-pinned) | peppol (region) |
+
+Multiple matches → load each. No match → cross-country / platform PR; skip this step (opportunistic).
+
+For each detected country, read `~/dev/personal-skills/runbooks/countries/<cc>/` (or `regions/<id>/`):
+- `code_map.md` — known code paths (helps verify the PR touches what you'd expect)
+- `runbook.md` — prior RCAs / known error patterns
+- `ubl_structure.md` — schema gotchas (if PR touches mapping/schema)
+- `api_contract.md` — endpoint spec (if PR touches routing/integration)
+- `credentials.md` — auth model (if PR touches auth/config)
+
+Surface known gotchas inline in Step 5 review. Example flags:
+- UAE PR touching mapper → check TaxCategory ordering vs `runbooks/countries/uae/ubl_structure.md` L42
+- JO mapping PR → verify Money-wrapper `.value.value` pattern not regressed
+- IND PR → confirm NIC switcher logic not re-introduced (reverted post-Nov 2025)
+
+If runbook claim contradicts what you find in the PR diff: flag as a discovery and suggest the user re-runs `/v-country-brain <cc>` to update the runbook.
+
 ### Step 3 — Cross-reference codebase
 For each modified function/symbol:
 - Grep call-sites: `grep -rn "<symbol>" ~/Desktop/<repo>/src/`
@@ -48,6 +79,7 @@ For each modified function/symbol:
 - For schema/DB changes: trace producer + consumer paths
 - For API changes: enumerate all callers
 - For new features: check feature-flag gating (`@ConditionalOnCountry`, `@ConditionalOnProperty`, etc.)
+- **If country detected in Step 2.5**: cross-reference each finding against `code_map.md` and `runbook.md` known patterns. Flag deviations.
 
 ### Step 4 — Test verification (if local checkout)
 If `~/Desktop/<repo>/` exists and PR adds tests:

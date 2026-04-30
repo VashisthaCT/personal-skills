@@ -17,6 +17,18 @@ A customer ID (e.g. `tabby`, `mitsuba`, `swiggy`, `eicher`, `maf`) OR a customer
    - Suggest closest matches from the 5 named customers.
    - If user-provided string isn't in customers.yaml at all, ask: "This customer isn't in `data/customers.yaml`. Want me to add as `customer-N` placeholder?"
 
+## Step 1.5 — Country runbook auto-load
+
+Read the customer's `country` field from `data/customers.yaml`. If it maps to a runbook entry (jordan / india / uae / ksa / malaysia / belgium / france / poland), load these in parallel:
+
+- `~/dev/personal-skills/runbooks/countries/<cc>/runbook.md` — known oncall patterns + RCAs
+- `~/dev/personal-skills/runbooks/countries/<cc>/code_map.md` — code paths for the country
+- `~/dev/personal-skills/runbooks/countries/<cc>/ubl_structure.md` — schema gotchas (only if customer is e-invoicing-active for that country)
+
+Skip files that don't exist (stub countries). Use the loaded set in Step 3's "Suggested next actions" — surface country-specific patterns that may apply to this customer (e.g. "Tabby is a UAE customer; UAE has known TaxCategory ordering pitfall in mapping — check Tabby's recent invoices haven't regressed on that").
+
+If customer's country isn't in `customers.yaml` (placeholder), skip this step.
+
 ## Step 2 — Aggregate (last 180 days, parallel queries)
 
 ### JIRA tickets

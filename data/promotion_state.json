@@ -3,7 +3,7 @@
   "cycle": "FY27-H1",
   "cycle_start": "2026-04-01",
   "cycle_end": "2026-09-30",
-  "last_evaluated": "2026-04-28T01:37:47+05:30",
+  "last_evaluated": "2026-05-01T17:00:00+05:30",
   "user_grade_current": "SE-I / IC2 / L4",
   "user_grade_target": "SE-II / IC2-3 / L5",
   "rubric_lines": [
@@ -176,9 +176,17 @@
         "panels": 0,
         "feedback_notes": 0
       },
-      "blocker": "Manager confirmation needed (Q1 in §7 of plan) — eligibility may be gated to SE-II-confirmed engineers only",
-      "status": "🔴 not started, possibly N/A",
-      "history": []
+      "ayush_answer": "Interviews are taken only by SE-II and above. Confirmed by Ayush 2026-05-01. Line is N/A this cycle while user is SE-I; track again post-confirmation.",
+      "status": "⚪ N/A — SE-I (interviews are SE-II+ only per Ayush 2026-05-01)",
+      "history": [
+        {
+          "evaluated_at": "2026-05-01T17:00:00+05:30",
+          "from_status": "🔴 not started, possibly N/A",
+          "to_status": "⚪ N/A — SE-I",
+          "note": "Ayush confirmed interviews are SE-II+ only"
+        }
+      ],
+      "last_evaluated": "2026-05-01T17:00:00+05:30"
     },
     {
       "id": "product.customer_understanding",
