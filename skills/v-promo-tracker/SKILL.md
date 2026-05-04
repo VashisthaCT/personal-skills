@@ -14,7 +14,9 @@ Five rubric lines wired:
 - `org.communication` — subagent via Drive (RCAs) + Slack (`#einv-devs` broadcasts)
 - `ai.competency` — script via `data/ai_tooling.yaml`
 
-The other 7 lines in `promotion_state.json` stay untouched until later phases (`engineering.testing`, `engineering.debugging`, `org.influence`, `org.hiring`, `product.customer_understanding`, `product.metrics`, `execution.delivery_timeliness`).
+The other 6 lines in `promotion_state.json` stay untouched until later phases (`engineering.testing`, `engineering.debugging`, `org.influence`, `product.customer_understanding`, `product.metrics`, `execution.delivery_timeliness`).
+
+`org.hiring` is `⚪ N/A` (Ayush confirmed 2026-05-01 that interviews are SE-II+ only) — script leaves it alone; revisit post-SE-II confirmation.
 
 ## Step 1 — Snapshot before-state
 
@@ -67,7 +69,8 @@ Format:
 - ...
 
 *Deferred (out of MVP scope, scored as 🟡 default):*
-[engineering.testing, engineering.debugging, org.influence, org.hiring, product.customer_understanding, product.metrics, execution.delivery_timeliness]
+[engineering.testing, engineering.debugging, org.influence, product.customer_understanding, product.metrics, execution.delivery_timeliness]
+*N/A (Ayush-confirmed):* [org.hiring — SE-II+ only, revisit post-confirmation]
 
 *Next:* run /v-promo-aim to get the top-3 weakest lines + concrete actions.
 ```

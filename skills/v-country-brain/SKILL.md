@@ -95,6 +95,26 @@ Mentally check each substantive claim you're about to make. For each one, ask: "
 
 Note file path + line numbers for every claim you'll make in the answer.
 
+### Step 4.5 — Live log / error / metric verification (when relevant)
+
+After the code path is identified, optionally verify with live prod data based on country routing.
+
+**Routing (matches `~/dev/personal-skills/CLAUDE.md` MCP routing table):**
+
+| Country | Logs | Errors | Metrics | K8s |
+|---|---|---|---|---|
+| IND (`in`) | `clarity-coralogix` (default tenant) | `clarity-sentry` | `clarity-grafana` | `clarity-sight-agent` |
+| All others (uae/ksa/jordan/malaysia/belgium/france/poland/peppol/gcc) | `clarity-cubeapm` | `clarity-sentry` | `clarity-grafana` | `clarity-sight-agent` |
+
+When uncertain which cluster/region the service runs in: call `clarity-service-map` first to resolve.
+
+**When to run:**
+- **Trace queries**: search the prod log MCP for the error message + ±1h around the incident timestamp. Confirms the code path is the actually-failing one, not a sibling.
+- **Config-drift queries**: query `clarity-grafana` (Prometheus) or `clarity-cubeapm` for the actual prod value of the flag/percent. YAML defaults aren't enough — runtime wins per Step 3.5.
+- **How-it-works / Find / Diff queries**: usually skip — code reading is sufficient. Only verify if the user explicitly asks "is this happening in prod right now".
+
+**Hard rule — don't fabricate log evidence.** If the MCP query returns no hits in the time window, say so explicitly. Never claim a log line that doesn't appear in the actual MCP response. If MCP fails (auth, rate limit), note it and proceed without — degrade gracefully.
+
 ### Step 5 — Compose the answer (split Verified vs Hypothesis)
 
 Output format (markdown, default to chat; if `--draft`, post to self-DM `D088362AS65`):

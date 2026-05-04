@@ -46,6 +46,14 @@ Run these in parallel; each may fail — degrade gracefully and note "no signal"
    - `project = SEV1BUGS AND text ~ "<keywords>" ORDER BY created DESC` (cap 10) — to find linked Sev1 action items
 3. **Recent PRs** — `gh search prs --author=VashisthaCT --updated >=$(date -v-30d +%Y-%m-%d) <keywords>` (requires `dangerouslyDisableSandbox: true`). Cross-reference with prior PRs that touched the affected code path.
 4. **Prior RCAs** — runbook's `RCAs encountered` section + memory file `project_perf_review_fy26.md` §6 (the 6 H2 user-owned RCA Drive IDs).
+5. **Prod logs (route by country, see `CLAUDE.md` MCP routing):**
+   - IND incidents → `clarity-coralogix` (default tenant). Search by service name + error pattern in window `incident_started_at ± 1h`.
+   - GCC/MEA/EU/Peppol incidents → `clarity-cubeapm`. Same window logic.
+   - When service identifier is uncertain → `clarity-service-map` first to resolve cluster/region.
+   - Capture: top error message frequency, sample log lines with file:line if available, affected pod/host names.
+6. **PagerDuty** — if the incident was paged, `clarity-pagerduty.get_incident_details(<incident_id_or_url>)` for alert details + AI analysis. `get_incident_timeline` for first-acks + escalations + resolution path. Auto-populates the Timeline + Detection sections of the RCA.
+7. **Sentry** — `clarity-sentry` for open issues matching the service + error pattern. Tells you whether the bug class was already known + helps assign severity (recurring vs novel).
+8. **K8s state (if pod-level fault suspected)** — `clarity-sight-agent` for pod restarts, OOM kills, recent releases that may have caused the regression. Cross-reference release timestamps with incident start.
 
 ## Step 4 — Compose the RCA draft
 

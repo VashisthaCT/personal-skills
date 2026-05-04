@@ -32,7 +32,7 @@ For each of the 3 lines, write ONE concrete action the user can do in the next 7
 | `org.mentoring` | "Add 2 named SE-I mentees to `data/mentees.yaml` (id, name, slack handle, started date). Schedule a first 1:1 with each. Then log the touchpoint via `/v-mentee log <id>` (Phase 6)." |
 | `org.influence` | "Find one design thread in `#einvoice-mea-l3-support` or `#einv-devs` this week, push back with a concrete alternative + tradeoff. Track whether the design changed in the follow-up PR." |
 | `org.communication` | "Write one RCA-format post-mortem (NIC RCF template at `prompts/rca_template.md`) for the most recent Sev2 you handled. Post a 1-paragraph broadcast to `#einv-devs` summarizing it." |
-| `org.hiring` | "Ask Ayush in next 1:1 whether SE-I/SE-II hiring panels are open to non-confirmed SE-IIs (deferred Q1). Until answered, this line stays `🔴 N/A`." |
+| `org.hiring` | "ANSWERED 2026-05-01: Ayush confirmed interviews are SE-II+ only. Line is `⚪ N/A` while at SE-I — filtered out of this skill's selector. Revisit post-SE-II confirmation." |
 | `product.customer_understanding` | "Pick one customer from `data/customers.yaml` (top-10). Trace one of their tickets end-to-end (JIRA + repo + Slack). Write a 1-pager learning into `data/customers.yaml` notes." |
 | `product.metrics` | "In your next status update, cite at least 2 concrete numbers (failure %, p99 latency, IRN/EWB volume). Track in `current.metric_citations` evidence." |
 | `ai.competency` | "Wrap your next feature in `/v-timed-feature` (Phase 6) with before/after timer. Once 3 features are logged, AI L4 flips to 🟢." |

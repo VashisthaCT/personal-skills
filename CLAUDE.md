@@ -36,6 +36,27 @@ Vashistha Garg's private Claude Code plugin: personal productivity OS. Full plan
 - Drive search syntax: NO `'me' in owners`, NO `trashed = false`. Dates ISO 8601 with `Z` suffix. Filter out `parentId == "1i0Msm1KKgwpCdsWtfjfcoT_21zuxMcuF"` (auto Meet Transcripts).
 - Slack MCP caps at 20 msgs/query — paginate.
 
+## MCP routing (which MCP for which thing)
+
+Skills that need live data should route by **country first**, then by **data type**:
+
+| Need | MCP | Why |
+|---|---|---|
+| **IND prod logs** (e-invoicing-be, clr-irp-be, bifrostgsp, einvoicing-webapp) | `clarity-coralogix` (default tenant) | IND services are tagged in coralogix default region |
+| **GCC / MEA / EU / SEA prod logs** (einvoicing-core, einvoice-<cc> modules, clear-routing) | `clarity-cubeapm` | Multi-region — non-IND services route here |
+| **Service identifier resolution** ("where does <service> live?") | `clarity-service-map` | Cross-system: resolves PagerDuty + Grafana + Coralogix + CubeAPM + K8s IDs in one call |
+| **Kubernetes pod state, restarts, releases** | `clarity-sight-agent` | Multi-region K8s + release tracking |
+| **Error tracking** (Sentry issues, exception details) | `clarity-sentry` | Per-service Sentry projects |
+| **Alert source-of-truth** (active incidents, AI analysis) | `clarity-pagerduty` | Auto-populates RCA timeline |
+| **Dashboards & metric panels** | `clarity-grafana` | Prometheus + ClickHouse queries |
+| **Athena SQL** (GCC analytics, ClickHouse `einvoicing_gcc_analytics`) | `athena` | Multi-region |
+| **GST/PAN/MSME verification** | `clarity-clearidentity` | IND identity API |
+| **GitHub commits/PRs** | `clarity-github` (richer) OR `gh` CLI | Either works |
+| **Recon data** (advance-recon ClickHouse, matching tasks) | `clarity-recon-mcp` | Reconciliation data access |
+| **One Integration / ERP connector lifecycle** | `clarity-one-integration` | User's product domain |
+
+**Country routing rule:** IND → `coralogix`. Everything else (UAE, KSA, Jordan, Belgium, France, Malaysia, Poland, Peppol, GCC) → `cubeapm`. When uncertain, call `service-map` first.
+
 ## Don't
 - Don't run `git commit` or `git push` (user does these).
 - Don't fork existing skills (`cleartax-perf-review-builder`, country experts in AMClaudeKit). Wrap them.

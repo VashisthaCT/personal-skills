@@ -28,6 +28,7 @@
     "./skills/v-spec-to-impl",
     "./skills/v-pr-review",
     "./skills/v-law-watch",
+    "./skills/v-journal",
     "./skills/v-help"
   ]
 }
