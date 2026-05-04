@@ -57,6 +57,12 @@ Skills that need live data should route by **country first**, then by **data typ
 
 **Country routing rule:** IND → `coralogix`. Everything else (UAE, KSA, Jordan, Belgium, France, Malaysia, Poland, Peppol, GCC) → `cubeapm`. When uncertain, call `service-map` first.
 
+### MCP gotchas (do not repeat past mistakes)
+
+- **GCC / KSA logs MUST go through `sight-agent.search_cubeapm_logs` with `cluster=prod-oci`** — NOT the raw `cubeapm.discover_logs_stream_fields` / `cubeapm.get_log_hits` / `cubeapm.query_logs`. The raw tools don't auto-route to the OCI cluster for the `ksa` region and silently return `null` / empty hits even though logs are flowing. Verified 2026-05-04: `einvoicingbe-prod-oci-http`, `clear-harvester-gcc-prod-http`, `ingestionv2-einvoice-gcc-prod-http` all return 50-100+ logs/h via `sight-agent` but 0 via raw cubeapm.
+- **`mea` cubeapm region** (`cubeapm-mea.internal.cleartax.co`) currently times out from this MCP token. Use `ksa` region or `sight-agent` instead until it's fixed.
+- **`cubeapm.list_available_regions` shows `ksa` and `mea`** as available, but only `ksa` actually returns data via the raw tools — and even then only for a few service-name labels. **Heuristic: if the answer matters, route through `sight-agent`.**
+
 ## Don't
 - Don't run `git commit` or `git push` (user does these).
 - Don't fork existing skills (`cleartax-perf-review-builder`, country experts in AMClaudeKit). Wrap them.
