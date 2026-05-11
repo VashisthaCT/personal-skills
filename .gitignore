@@ -12,3 +12,4 @@ data/snapshots/*.json
 
 # work-journal is its own git repo (VashisthaCT/work-journal), maintained separately by daily-documentation cron
 data/work-journal/
+.coda_token
