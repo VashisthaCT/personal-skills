@@ -63,6 +63,17 @@ Skills that need live data should route by **country first**, then by **data typ
 - **`mea` cubeapm region** (`cubeapm-mea.internal.cleartax.co`) currently times out from this MCP token. Use `ksa` region or `sight-agent` instead until it's fixed.
 - **`cubeapm.list_available_regions` shows `ksa` and `mea`** as available, but only `ksa` actually returns data via the raw tools — and even then only for a few service-name labels. **Heuristic: if the answer matters, route through `sight-agent`.**
 
+## Runbook log convention (Karpathy LLM-wiki pattern)
+
+The runbook directory follows the [Karpathy LLM-wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — see [`runbooks/purpose.md`](runbooks/purpose.md). Two top-level navigation files:
+
+- [`runbooks/index.md`](runbooks/index.md) — content catalog. Updated when a new entry is added (`/v-country-onboard` or first `/v-country-brain` discovery on a stub).
+- [`runbooks/log.md`](runbooks/log.md) — chronological append-only. **Every skill that reads or writes runbook content appends one line** with format `## [YYYY-MM-DD HH:MM IST] <skill> | <entry> | <one-line summary>`. Grep-able via `grep "^## \[" log.md | tail -10`.
+
+Skills that must append to `log.md`: `/v-country-brain`, `/v-rca`, `/v-incident`, `/v-runbook`, `/v-country-onboard`. The append goes at the END of the skill's workflow (after the main output, regardless of success/abort — log the attempt).
+
+Frontmatter convention for runbook pages: `tags`, `summary` (one line), `last_updated`, `related`. Lets the model relevance-filter without reading full file. Bulk-apply to existing 45 pages is tracked as follow-up; new pages should include it from creation.
+
 ## Don't
 - Don't run `git commit` or `git push` (user does these).
 - Don't fork existing skills (`cleartax-perf-review-builder`, country experts in AMClaudeKit). Wrap them.

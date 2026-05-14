@@ -1,3 +1,15 @@
+---
+tags: [country, jordan, mea, jofotara, dev-complete]
+summary: Jordan JoFotara clearance-model e-invoicing; sales-only MVP; MAF go-live target May 15, 2026; Avtax consultant.
+last_updated: 2026-04-28
+related:
+  - countries/jordan/api_contract.md
+  - countries/jordan/ubl_structure.md
+  - countries/jordan/credentials.md
+  - countries/jordan/code_map.md
+  - countries/jordan/runbook.md
+---
+
 # Jordan (JO) — JoFotara E-Invoicing
 
 **Code:** JO | **Region:** MEA | **Status:** Dev Complete (NOT live as of Apr 2026)

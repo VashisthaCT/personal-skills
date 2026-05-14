@@ -17,6 +17,8 @@ You are drafting (or extending) an oncall runbook for Vashistha. Triggered by `/
 
 **Pattern mode:** if `<id>` is an error code / recurring symptom, infer the country/region from context and treat as a country/region drafting task — append a new `### Cause: [TITLE]` block to the most-relevant runbook. If ambiguous, list candidates and stop.
 
+**Lint mode:** if `<id>` is `lint <cc>` or `lint all`, switch to Step 7 (lint workflow). Lint is a health-check pass over existing runbook entries — finds contradictions, stale claims, orphans, missing cross-refs, frontmatter gaps. Drafts a report; never auto-fixes.
+
 ## Step 2 — Load context
 
 Read in parallel:
@@ -91,6 +93,66 @@ Updated: runbooks/countries/<cc>/runbook.md
 ```
 
 Do **not** post to Slack. This skill is local-write only — `/v-runbook` is a build-time tool, not a comms tool.
+
+## Step 7 — Lint workflow (when invoked as `/v-runbook lint <cc>` or `lint all`)
+
+Health-check pass. Report-only — never auto-fix. Drafts a markdown report to chat.
+
+### Scope
+- `lint <cc>` — lint a single entry (e.g. `lint jordan`, `lint peppol`)
+- `lint all` — lint every entry under `runbooks/countries/` + `runbooks/regions/`
+
+### Checks (run all per entry)
+
+1. **Missing files vs seed level** (`data/countries.yaml` `seed: rich/medium/stub`):
+   - Rich: must have all 9 files (overview, code_map, runbook, api_contract, credentials, people, live_state, law_changes, ubl_structure)
+   - Medium: must have ≥6 — flag missing as `TODO`
+   - Stub: must have at least `overview.md`
+2. **Missing frontmatter:** any file lacking YAML frontmatter (`tags`, `summary`, `last_updated`). Lists offenders.
+3. **Stale claims:** any file > 60 days since `last_updated` while the country has had `_sessions/*` activity in the same window — implies the runbook may not have caught up with debug discoveries.
+4. **Orphan pages:** any file under `<entry>/` that is NOT linked from `index.md` AND not referenced from another `<entry>/<file>.md`. Likely safe to keep but flag.
+5. **TODO / TBD markers:** count and list `[TODO]`, `[TBD]`, `[PENDING]` occurrences per file.
+6. **Cross-file contradictions:** light heuristic — for each entry, scan whether claims like "endpoint = X" or "auth = Y" differ between `overview.md`, `api_contract.md`, `credentials.md`. Surface as candidates; don't claim definitive contradiction.
+7. **Missing `log.md` entries:** scan `_sessions/*.md` for the entry; for each session log, check whether `runbooks/log.md` has a corresponding `## [date] /v-country-brain | <cc>` line. Surface gaps — skills should have logged but didn't.
+8. **Index sync:** verify every entry in `data/countries.yaml` has a row in `runbooks/index.md`. Surface missing.
+
+### Output format
+
+```
+## Lint report — <scope>
+
+### <entry-id> (seed: <rich/medium/stub>)
+
+| Check | Status | Notes |
+|---|---|---|
+| File completeness | 🟢 / 🟡 / 🔴 | <count missing / expected> |
+| Frontmatter coverage | 🟢 / 🟡 / 🔴 | <N of M files have frontmatter> |
+| Stale claims (>60d) | 🟢 / 🟡 | <list of files + last-modified dates> |
+| Orphan pages | 🟢 / 🟡 | <list> |
+| TODO count | <N> | <top 3 file:line> |
+| Cross-file consistency | 🟢 / 🟡 | <candidates to review manually> |
+| log.md sync | 🟢 / 🟡 | <gap count> |
+
+### Aggregate
+
+- Entries at 🔴: <count>
+- Entries at 🟡: <count>
+- Entries at 🟢: <count>
+- Top 3 entries to address first: <id1>, <id2>, <id3>
+```
+
+### Don't (lint-specific)
+
+- Don't auto-fix. Lint is read-only. Repairs happen via a follow-up `/v-runbook <id>` invocation or manual edit.
+- Don't load Drive RCA URLs in lint mode — Step 3-4 pulls are skipped to keep lint fast.
+- Don't append the lint report to any runbook file. Lives in chat only.
+
+### Verifiable success (lint mode)
+
+- Report contains all 8 check rows per entry.
+- "Aggregate" section names top-3 entries to prioritize.
+- No runbook files modified.
+- No `log.md` append (lint is read-only).
 
 ## Verifiable success criteria
 
